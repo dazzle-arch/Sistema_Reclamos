@@ -1,0 +1,87 @@
+<main class="registro-container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm" style="width: 1200px;">
+        <div class="card-header bg-white d-flex align-items-center justify-content-between py-3">
+            <img src="/img/logo-municipalidad.png" alt="logo" style="height: 50px;">
+            <h2 class="text-danger fw-bold m-0">Registro Información</h2>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">APELLIDOS</label>
+                <div class="col-9">
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">NOMBRES</label>
+                <div class="col-9">
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">DNI</label>
+                <div class="col-2">
+                    <input type="text" class="form-control">
+                </div>
+
+                <label class="col-2 text-end fw-bold">TELEFONO</label>
+                <div class="col-2">
+                    <input type="text" class="form-control">
+                </div>
+
+                <label class="col-1 text-end fw-bold">SEXO</label>
+                <div class="col-2">
+                    <select class="form-select">
+                        <option value="" selected disabled>Seleccione</option>
+                        <option value="F">Femenino</option>
+                        <option value="M">Masculino</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">CORREO</label>
+                <div class="col-9">
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">TIPO DE RECLAMO</label>
+                <div class="col-9">
+                    <select class="form-select">
+                        <option value="" selected disabled>Seleccione un tipo</option>
+                        <option value="infraestructura">Infraestructura</option>
+                        <option value="limpieza">Limpieza pública</option>
+                        <option value="seguridad">Seguridad ciudadana</option>
+                        <option value="transporte">Transporte</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">DESCRIPCION</label>
+                <div class="col-9">
+                    <textarea class="form-control" rows="5"></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">EVIDENCIA</label>
+                <div class="col-9">
+                    <input type="file" class="form-control">
+                    <div class="form-text">Adjuntar evidencia (opcional)</div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-danger px-5 py-2 fw-bold">Enviar</button>
+            </div>
+
+        </div>
+    </div>
+
+</main>

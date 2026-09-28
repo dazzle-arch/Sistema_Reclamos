@@ -1,0 +1,10 @@
+main.panel-container {
+  min-height: 100vh;
+  background-image: url('/img/fondo-machupicchu.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+table th, table td {
+  border-color: #dc3545 !important;
+}

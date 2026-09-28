@@ -1,0 +1,7 @@
+.nav-item a:hover {
+  color: #dc3545 !important;
+}
+
+.active-link {
+  color: #dc3545 !important;
+}

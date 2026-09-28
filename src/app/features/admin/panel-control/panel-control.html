@@ -1,0 +1,46 @@
+<main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm d-flex flex-row" style="width: 1200px; min-height: 650px;">
+
+        <app-sidebar-admin></app-sidebar-admin>
+        
+        <div class="content flex-grow-1 p-4">
+            <div class="row">
+
+                <div class="col-4">
+                    <div class="border rounded p-3 h-100">
+                        <h6 class="fw-bold mb-3">Resumen semanal</h6>
+                        <ul class="list-unstyled small">
+                            <li class="mb-2"><span class="fw-bold">12</span>reclamos nuevos</li>
+                            <li class="mb-2"><span class="fw-bold">7</span>derivados</li>
+                            <li class="mb-2"><span class="fw-bold">5</span>atendidos</li>
+                            <li class="mb-2"><span class="fw-bold">3</span>cerrados esta semana</li>
+                            <li><span class="fw-bold text-danger">2</span>fuera de plazo</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <p class="small text-center fw-bold mb-1">Reclamos registrados por mes</p>
+                    <canvas id="lineChart"></canvas>
+                </div>
+
+                <div class="col-4">
+                    <p class="small text-center fw-bold mb-1">Reclamos por tipo</p>
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-6">
+                    <p class="small text-center fw-bold mb-1">Reclamos por estado</p>
+                    <canvas id="barChart"></canvas>
+                </div>
+
+                <div class="col-6">
+                    <p class="small text-center fw-bold mb-1">Cumplimiento de plazos</p>
+                    <canvas id="doughnuChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

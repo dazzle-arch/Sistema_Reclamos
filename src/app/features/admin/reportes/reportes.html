@@ -1,0 +1,47 @@
+<main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm d-flex flex-row" style="width: 1200px; min-height: 650px;">
+        <app-sidebar-admin></app-sidebar-admin>
+
+        <div class="content flex-grow-1 p-4 d-flex gap-4">
+            
+            <div class="border rounded p-3" style="width: 250px; height: fit-content;">
+                <h6 class="fw-bold mb-3">Categorias</h6>
+
+                <div class="mb-4">
+                    <label class="form-label">Ordenar por</label>
+                    <select class="form-select">
+                        <option value="" selected disabled>Seleccione</option>
+                        <option value="reciente">Más reciente</option>
+                        <option value="antiguo">Más antiguo</option>
+                        <option value="estado">Por estado</option>
+                        <option value="departamento">Por departamento</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label d-block">Estado</label>
+                    <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span>Inicio</span>
+                        <span>Culminado</span>
+                    </div>
+                    <input type="range" class="form-range" min="0" max="100" value="30">
+                </div>
+            </div>
+
+            <div class="flex-grow-1">
+                <ul class="list-group">
+                    <li class="list-group-item border-warning">Reporte 1</li>
+                    <li class="list-group-item border-warning">Reporte 2</li>
+                    <li class="list-group-item border-warning">Reporte 3</li>
+                    <li class="list-group-item border-warning">Reporte 4</li>
+                    <li class="list-group-item border-warning">Reporte 5</li>
+                    <li class="list-group-item border-warning">Reporte 6</li>
+                    <li class="list-group-item border-warning">Reporte 7</li>
+                    <li class="list-group-item border-warning">Reporte 8</li>
+                    <li class="list-group-item border-warning">Reporte 9</li>
+                    <li class="list-group-item border-warning">Reporte 10</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>

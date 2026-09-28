@@ -1,0 +1,54 @@
+<main class="consulta-container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm" style="width: 1200px;">
+        <div class="card-header bg-white d-flex align-items-center justify-content-between py-3">
+            <img src="/img/logo-municipalidad.png" alt="logo" style="height: 50px;">
+            <h2 class="text-danger fw-bold m-0">Estado del Reclamo</h2>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="mb-4">
+                <label class="fw-bold mb-2">Ingrese el código del trámite</label>
+                <input type="text" class="form-control">
+            </div>
+
+            <div class="mb-5">
+                <label class="fw-bold mb-2">Ingrese DNI</label>
+                <input type="text" class="form-control">
+            </div>
+
+            <div class="estado-tramite text-center my-5">
+                <h4 class="fw-bold mb-4">Estado del trámite</h4>
+
+                <div class="progress-steps">
+                    <div class="step-labels d-flex justify-content-between mb-2">
+                        <span class="fw-bold">Registrado</span>
+                        <span class="fw-bold">Derivado</span>
+                        <span class="fw-bold">Atendido</span>
+                        <span class="fw-bold">Cerrado</span>
+                    </div>
+
+                    <div class="progress-track d-flex">
+                        <div class="segment bg-danger"></div>
+                        <div class="segment bg-warning"></div>
+                        <div class="segment bg-warning-subtle"></div>
+                        <div class="segment bg-success"></div>
+                    </div>
+
+                    <div class="dots d-flex justify-content-between">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a routerLink="/detalle-tramite" class="btn btn-outline-dark px-4 py-2">
+                    Detalles
+                </a>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,36 @@
+main.consulta-container {
+  min-height: 100vh;
+  background-image: url('/img/fondo-machupicchu.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.progress-steps {
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.progress-track {
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.segment {
+  flex: 1;
+}
+
+.dots {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  width: 100%;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background-color: black;
+  border-radius: 50%;
+}

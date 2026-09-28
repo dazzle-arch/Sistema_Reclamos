@@ -1,0 +1,10 @@
+main.panel-container {
+  min-height: 100vh;
+  background-image: url('/img/fondo-machupicchu.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.list-group-item {
+  border-width: 1px;
+}

@@ -1,0 +1,11 @@
+main.login-container{
+    min-height: 100vh;
+    background-image: url('/img/fondo-machupicchu.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.card {
+    border-radius: 1rem;
+    overflow: hidden;
+}

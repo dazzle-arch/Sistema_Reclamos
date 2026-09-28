@@ -1,0 +1,19 @@
+
+.home-container {
+  position: relative;
+}
+
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+main.home-container {
+  min-height: 100vh;
+  background-image: url('/img/fondo-machupicchu.jpg');
+  background-size: cover;
+  background-position: center;
+}

@@ -1,0 +1,44 @@
+<main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm d-flex flex-row" style="width: 1200px; min-height: 650px;">
+        <app-sidebar-funcionario></app-sidebar-funcionario>
+
+        <div class="content flex-grow-1 p-4">
+            <h4 class="fw-bold mb-4">Mis casos asignados</h4>
+
+            <table class="able table-bordered text-center align-middle">
+                <thead>
+                    <tr class="text-danger">
+                        <th>Codigo</th>
+                        <th>Fecha</th>
+                        <th>Ciudadano</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0001</td>
+                        <td>20/09/2026</td>
+                        <td>Juan Pérez</td>
+                        <td>Infraestructura</td>
+                        <td><span class="badge bg-warning text-dark">Derivado</span></td>
+                        <td>
+                            <a routerLink="/funcionario/atender-caso/0001" class="btn btn-sm btn-danger">Atender</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>0002</td>
+                        <td>21/09/2026</td>
+                        <td>María López</td>
+                        <td>Limpieza</td>
+                        <td><span class="badge bg-secondary">Registrado</span></td>
+                        <td>
+                            <a routerLink="/funcionario/atender-caso/0002" class="btn btn-sm btn-danger">Atender</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>

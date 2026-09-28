@@ -1,0 +1,41 @@
+<main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm p-4" style="width: 700px;">
+        <h2 class="text-danger fw-bold mb-4">Atender caso N° {{idCaso}}</h2>
+
+        <div class="mb-3">
+            <label class="form-labelfw-bold">Estado Actual</label>
+            <select class="form-select">
+                <option value="registrado">Registrado</option>
+                <option value="derviado" selected>Derivado</option>
+                <option value="atentido">Atendido</option>
+                <option value="cerrado">Cerrado</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Derivar a otro departamento</label>
+            <select class="form-select">
+                <option value="" selected disabled>Seleccione (opcional)</option>
+                <option value="derviado" selected>Obras Publicas</option>
+                <option value="atentido">Limpieza Publica</option>
+                <option value="seguridad">Seguridad Ciudadana</option>
+                <option value="transporte">Transporte</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold">Respuesta / Observaciones</label>
+            <textarea class="form-control" row="4"></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold">Adjuntar documento de respuesta</label>
+            <input type="file" class="form-control">
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a routerLink="/funcionario/bandeja-casos" class="btn btn-outline-secondary">Cancelar</a>
+            <button class="btn btn-danger fw-bold px-4">Guardar cambios</button>
+        </div>
+    </div> 
+</main>

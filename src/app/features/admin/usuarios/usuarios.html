@@ -1,0 +1,70 @@
+<main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm d-flex flex-row" style="width: 1200px; min-height: 650px;">
+
+        <app-sidebar-admin></app-sidebar-admin>
+
+        <div class="content flex-grow-1 p-4">
+
+            <div class="d-flex gap-3 mb-4">
+                <div class="input-group" style="max-width: 350px;">
+                    <input type="text" class="form-control" placeholder="Buscar un nombre">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                </div>
+
+                <select class="form-select" style="max-width: 200px;">
+                    <option value="" selected disabled>Ordenar por</option>
+                    <option value="nombre">Nombre</option>
+                    <option value="cargo">Cargo</option>
+                </select>
+            </div>  
+
+            <div class="row row-cols-4 g-3">
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="bg-info-subtle" style="height: 120px;"></div>
+                        <div class="card-body text-center">
+                            <p class="fw-bold mb-0">Nombre usuario</p>
+                            <p class="text-muted small">(Cargo)</p>
+                            <button class="btn btn-primary w-100">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="bg-info-subtle" style="height: 120px;"></div>
+                        <div class="card-body text-center">
+                            <p class="fw-bold mb-0">Nombre usuario</p>
+                            <p class="text-muted small">(Cargo)</p>
+                            <button class="btn btn-primary w-100">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="bg-info-subtle" style="height: 120px;"></div>
+                        <div class="card-body text-center">
+                            <p class="fw-bold mb-0">Nombre usuario</p>
+                            <p class="text-muted small">(Cargo)</p>
+                            <button class="btn btn-primary w-100">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="bg-info-subtle" style="height: 120px;"></div>
+                        <div class="card-body text-center">
+                            <p class="fw-bold mb-0">Nombre usuario</p>
+                            <p class="text-muted small">(Cargo)</p>
+                            <button class="btn btn-primary w-100">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
