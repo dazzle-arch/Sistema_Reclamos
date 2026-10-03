@@ -13,6 +13,7 @@ import { AtenderCaso } from './features/funcionario/atender-caso/atender-caso';
 
 export const routes: Routes = [
     {path: '', component: Home},
+    {path: 'home', component: Home},
     {path: 'login', component: Login},
     {path: 'registrar', component: Registrar},
     {path: 'consultar-estado', component: ConsultarEstado},
