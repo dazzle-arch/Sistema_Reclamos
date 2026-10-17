@@ -5,3 +5,8 @@
 .active-link {
   color: #dc3545 !important;
 }
+
+.sidebar {
+  height: 100%;
+  align-self: stretch;
+}
