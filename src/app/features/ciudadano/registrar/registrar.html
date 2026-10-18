@@ -1,87 +1,129 @@
 <main class="registro-container d-flex justify-content-center align-items-center py-5">
     <div class="card shadow-sm" style="width: 1200px;">
-        <div class="card-header bg-white d-flex align-items-center justify-content-between py-3">
-            <img src="/img/logo-municipalidad.png" alt="logo" style="height: 75px;">
-            <h2 class="text-danger fw-bold m-0">Registro Información</h2>
-        </div>
-
-        <div class="card-body p-4">
-            <div class="row mb-3 align-items-center">
-                <label class="col-3 text-end fw-bold">APELLIDOS</label>
-                <div class="col-9">
-                    <input type="text" class="form-control">
-                </div>
+        <form [formGroup]="formularioReclamo" (ngSubmit)="enviarDatos()">
+            <div class="card-header bg-white d-flex align-items-center justify-content-between py-3">
+                <img src="/img/logo-municipalidad.png" alt="logo" style="height: 75px;">
+                <h2 class="text-danger fw-bold m-0">Registro Información</h2>
             </div>
 
-            <div class="row mb-3 align-items-center">
-                <label class="col-3 text-end fw-bold">NOMBRES</label>
-                <div class="col-9">
-                    <input type="text" class="form-control">
-                </div>
-            </div>
+            <div class="card-body p-4">
 
-            <div class="row mb-3 align-items-center">
-                <label class="col-3 text-end fw-bold">DNI</label>
-                <div class="col-2">
-                    <input type="text" class="form-control">
-                </div>
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">APELLIDOS</label>
+                    <div class="col-9">
+                        <input type="text" class="form-control" formControlName="apellidos">
 
-                <label class="col-2 text-end fw-bold">TELEFONO</label>
-                <div class="col-2">
-                    <input type="text" class="form-control">
+                        @if (formularioReclamo.get('apellidos')?.invalid && formularioReclamo.get('apellidos')?.touched) {
+                            <small class="text-danger">Los apellidos son obligatorios</small>
+                        }
+                    </div>
                 </div>
 
-                <label class="col-1 text-end fw-bold">SEXO</label>
-                <div class="col-2">
-                    <select class="form-select">
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">NOMBRES</label>
+                    <div class="col-9">
+                        <input type="text" class="form-control" formControlName="nombres">
+                        @if (formularioReclamo.get('nombres')?.invalid && formularioReclamo.get('nombres')?.touched) {
+                            <small class="text-danger">Los nombres son obligatorios</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">DNI</label>
+                    <div class="col-2">
+
+                        <input type="text" class="form-control" formControlName="dni">
+                        @if (formularioReclamo.get('dni')?.errors?.['required'] && formularioReclamo.get('dni')?.touched) {
+                            <small class="text-danger">Requerido.</small>
+                        }
+                        @if (formularioReclamo.get('dni')?.errors?.['pattern']) {
+                            <small class="text-danger">Debe tener 8 numeros</small>
+                        }
+                    </div>
+
+                    <label class="col-2 text-end fw-bold">TELEFONO</label>
+                    <div class="col-2">
+                        <input type="text" class="form-control" formControlName="telefono">
+                        @if (formularioReclamo.get('telefono')?.errors?.['required'] && formularioReclamo.get('telefono')?.touched) {
+                            <small class="text-danger">Requerido.</small>
+                        }
+                        @if (formularioReclamo.get('telefono')?.errors?.['pattern']) {
+                            <small class="text-danger">Debe tener 9 numeros</small>
+                        }
+                    </div>
+
+                    <select class="form-select" formControlName="sexo">
                         <option value="" selected disabled>Seleccione</option>
                         <option value="F">Femenino</option>
                         <option value="M">Masculino</option>
                     </select>
+                    @if (formularioReclamo.get('sexo')?.errors?.['required'] && formularioReclamo.get('sexo')?.touched) {
+                        <small class="text-danger">Requerido.</small>
+                    }
                 </div>
-            </div>
 
-            <div class="row mb-3 align-items-center">
-                <label class="col-3 text-end fw-bold">CORREO</label>
-                <div class="col-9">
-                    <input type="text" class="form-control">
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">CORREO</label>
+                    <div class="col-9">
+                        <input type="text" class="form-control" formControlName="correo">
+                        @if (formularioReclamo.get('correo')?.errors?.['required'] && formularioReclamo.get('correo')?.touched) {
+                            <small class="text-danger">Requerido.</small>
+                        }
+                        @if (formularioReclamo.get('correo')?.errors?.['email']) {
+                            <small class="text-danger">Debe insertar un correo valido @</small>
+                        }
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mb-3 align-items-center">
-                <label class="col-3 text-end fw-bold">TIPO DE RECLAMO</label>
-                <div class="col-9">
-                    <select class="form-select">
-                        <option value="" selected disabled>Seleccione un tipo</option>
-                        <option value="infraestructura">Infraestructura</option>
-                        <option value="limpieza">Limpieza pública</option>
-                        <option value="seguridad">Seguridad ciudadana</option>
-                        <option value="transporte">Transporte</option>
-                        <option value="otro">Otro</option>
-                    </select>
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">TIPO DE RECLAMO</label>
+                    <div class="col-9">
+                        <select class="form-select" formControlName="tipoReclamo">
+                            <option value="" selected disabled>Seleccione un tipo</option>
+                            <option value="infraestructura">Infraestructura</option>
+                            <option value="limpieza">Limpieza pública</option>
+                            <option value="seguridad">Seguridad ciudadana</option>
+                            <option value="transporte">Transporte</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                        
+                        @if (formularioReclamo.get('tipoReclamo')?.errors?.['required'] && formularioReclamo.get('tipoReclamo')?.touched) {
+                            <small class="text-danger">Requerido.</small>
+                        }
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mb-3 align-items-center">
-                <label class="col-3 text-end fw-bold">DESCRIPCION</label>
-                <div class="col-9">
-                    <textarea class="form-control" rows="5"></textarea>
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">DESCRIPCION</label>
+                    <div class="col-9">
+                        <textarea class="form-control" rows="5" formControlName="descripcion"></textarea>
+
+                        @if (formularioReclamo.get('descripcion')?.errors?.['required'] && formularioReclamo.get('descripcion')?.touched) {
+                            <small class="text-danger">Requerido.</small>
+                        }
+                        @if (formularioReclamo.get('descripcion')?.errors?.['minlength']) {
+                            <small class="text-danger">Escribe al menos 10 caracteres.</small>
+                        }
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mb-3 align-items-center">
-                <label class="col-3 text-end fw-bold">EVIDENCIA</label>
-                <div class="col-9">
-                    <input type="file" class="form-control">
-                    <div class="form-text">Adjuntar evidencia (opcional)</div>
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">EVIDENCIA</label>
+                    <div class="col-9">
+                        <input type="file" class="form-control" formControlName="evidencia">
+                        <div class="form-text">Adjuntar evidencia (opcional)</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="text-center">
-                <button class="btn btn-danger px-5 py-2 fw-bold">Enviar</button>
-            </div>
+                <div class="text-center">
+                    <button class="btn btn-danger px-5 py-2 fw-bold">Enviar</button>
+                </div>
 
-        </div>
+            </div>
+                
+        </form>
+        
     </div>
 
 </main>
