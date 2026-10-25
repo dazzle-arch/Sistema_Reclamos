@@ -52,15 +52,17 @@
                             <small class="text-danger">Debe tener 9 numeros</small>
                         }
                     </div>
-
-                    <select class="form-select" formControlName="sexo">
-                        <option value="" selected disabled>Seleccione</option>
-                        <option value="F">Femenino</option>
-                        <option value="M">Masculino</option>
-                    </select>
-                    @if (formularioReclamo.get('sexo')?.errors?.['required'] && formularioReclamo.get('sexo')?.touched) {
-                        <small class="text-danger">Requerido.</small>
-                    }
+                    <label class="col-1 text-end fw-bold">SEXO</label>
+                    <div class="col-2">
+                        <select class="form-select" formControlName="sexo">
+                            <option value="" selected disabled>Seleccione</option>
+                            <option value="F">Femenino</option>
+                            <option value="M">Masculino</option>
+                        </select>
+                        @if (formularioReclamo.get('sexo')?.errors?.['required'] && formularioReclamo.get('sexo')?.touched) {
+                            <small class="text-danger">Requerido.</small>
+                        }
+                    </div>
                 </div>
 
                 <div class="row mb-3 align-items-center">
@@ -81,11 +83,9 @@
                     <div class="col-9">
                         <select class="form-select" formControlName="tipoReclamo">
                             <option value="" selected disabled>Seleccione un tipo</option>
-                            <option value="infraestructura">Infraestructura</option>
-                            <option value="limpieza">Limpieza pública</option>
-                            <option value="seguridad">Seguridad ciudadana</option>
-                            <option value="transporte">Transporte</option>
-                            <option value="otro">Otro</option>
+                            @for (categoria of categorias; track categoria.idCategoria){
+                                <option [value]="categoria.idCategoria">{{ categoria.nombre}}</option>
+                            }
                         </select>
                         
                         @if (formularioReclamo.get('tipoReclamo')?.errors?.['required'] && formularioReclamo.get('tipoReclamo')?.touched) {

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { required } from '@angular/forms/signals';
+import { CategoriaService } from '../../../core/services/categoria';
+import { Categoria } from '../../../core/models/categoria.model';
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -8,10 +9,14 @@ import { required } from '@angular/forms/signals';
   styleUrl: './registrar.css',
   templateUrl: './registrar.html',
 })
-export class Registrar {
+export class Registrar implements OnInit{
   formularioReclamo: FormGroup;
+  categorias: Categoria[] = [];
 
-  constructor(private fb: FormBuilder){
+  constructor(
+    private fb: FormBuilder, 
+    private categoriaService : CategoriaService)
+    {
     this.formularioReclamo = this.fb.group({
       apellidos: ['', Validators.required],
       nombre: ['', Validators.required],
@@ -25,6 +30,13 @@ export class Registrar {
       tipoReclamo: ['', Validators.required],
       descripcion: ['', [Validators.required, Validators.minLength(10)]],
       evidencia: [''] // Es opcional, no lleva validadores
+    })
+  }
+
+  ngOnInit(): void {
+    this.categoriaService.listar().subscribe({
+      next: (data) => this.categorias = data,
+      error: (error) => console.error('Error al cargar categorias', error)
     })
   }
 
