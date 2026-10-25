@@ -5,18 +5,21 @@
         <div class="row mb-3 align-items-center">
             <label class="col-4 fw-bold">Departamento Destino</label>
             <div class="col-8">
-                <input type="text" class="form-control" disable>
+                <!-- 1. Usamos [value] para enlazar el dato y TitleCasePipe para las mayúsculas iniciales -->
+                <input type="text" class="form-control" readonly [value]="datosCrudos.departamento | titlecase">
             </div>
         </div>
 
         <div class="row mb-4 align-items-center">
             <label class="col-3 fw-bold">Fecha de registro</label>
             <div class="col-3">
-                <input type="date" class="form-control" disable value="2026-09-24">
+                <!-- 2. DatePipe transforma la fecha fea en dd/MM/yyyy -->
+                <input type="text" class="form-control" readonly [value]="datosCrudos.fechaApertura | date:'dd/MM/yyyy'">
             </div>
             <label class="col-3 fw-bold">Tiempo estimado de culminacion</label>
             <div class="col-3">
-                <input type="date" class="form-control" disable value="2026-09-24">
+                <!-- Usamos el mismo DatePipe para la fecha estimada -->
+                <input type="text" class="form-control" readonly [value]="datosCrudos.fechaEstimada | date:'dd/MM/yyyy'">
             </div>
         </div>  
         
@@ -28,20 +31,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                </tr>
+                <!-- 3. Bucle @for para recorrer el historial automáticamente -->
+                @for (item of historial; track item.fecha) {
+                    <tr>
+                        <!-- Formato de fecha que incluye la hora (ej. 24/09/2026 10:00 AM) -->
+                        <td class="fw-bold">{{ item.fecha | date:'dd/MM/yyyy hh:mm a' }}</td>
+                        <!-- UpperCasePipe para convertir toda la acción a MAYÚSCULAS -->
+                        <td>{{ item.accion | uppercase }}</td>
+                    </tr>
+                }
             </tbody>
         </table>
 
         <div class="d-flex justify-content-between mt-4">
             <button class="btn btn-danger fw-bold">Descargar Documento de respuesta oficial</button>
-            <a routerLink="/" class="btn btn bg-danger fw-bold">Volver al inicio</a>
+            <a routerLink="/" class="btn btn-danger fw-bold">Volver al inicio</a>
         </div>
     </div>
 </main>

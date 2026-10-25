@@ -12,3 +12,7 @@ main.panel-container {
 .active-link {
   color: #dc3545 !important;
 }
+canvas {
+  max-height: 280px;
+  width: 100% !important;
+}

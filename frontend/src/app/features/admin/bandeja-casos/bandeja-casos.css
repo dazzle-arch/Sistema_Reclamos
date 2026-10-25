@@ -5,6 +5,21 @@ main.panel-container {
   background-position: center;
 }
 
-table th, table td {
-  border-color: #dc3545 !important;
+.table {
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border: 2px solid #dc3545;
+}
+
+.table thead th {
+  color: #000;
+  font-weight: bold;
+  background-color: white;
+}
+
+.table tbody td {
+  height: 50px;
 }
