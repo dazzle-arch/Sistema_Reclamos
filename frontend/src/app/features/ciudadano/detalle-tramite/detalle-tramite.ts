@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-
+import { RouterLink } from '@angular/router';
 import { DatePipe, UpperCasePipe, TitleCasePipe } from '@angular/common';
 
 @Component({
   
-  imports: [DatePipe, UpperCasePipe, TitleCasePipe], 
+  imports: [RouterLink, DatePipe, UpperCasePipe, TitleCasePipe], 
   selector: 'app-detalle-tramite',
   styleUrl: './detalle-tramite.css',
   templateUrl: './detalle-tramite.html',
