@@ -28,7 +28,6 @@ public class RolServiImpl implements RolService {
         Rol rol = new Rol();
         rol.setNombre(dto.nombre());
         rol.setDescripcion(dto.descripcion());
-        rol.setPermisos(dto.permisos());
 
         return toResponse(repository.save(rol));
     }
@@ -38,7 +37,6 @@ public class RolServiImpl implements RolService {
         return repository.findById(id).map(rol -> {
             rol.setNombre(dto.nombre());
             rol.setDescripcion(dto.descripcion());
-            rol.setPermisos(dto.permisos());
             return toResponse(repository.save(rol));
         }).orElse(null);
     }
@@ -53,6 +51,6 @@ public class RolServiImpl implements RolService {
     }
 
     private RolResponseDTO toResponse(Rol r) {
-        return new RolResponseDTO(r.getIdRol(), r.getNombre(), r.getDescripcion(), r.getPermisos());
+        return new RolResponseDTO(r.getIdRol(), r.getNombre(), r.getDescripcion());
     }
 }

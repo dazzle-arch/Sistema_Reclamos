@@ -2,12 +2,12 @@ package com.sistemareclamos.api.dtos;
 
 public record UsuarioResponseDTO(
         Long idUsuario,
+        Long idRol,
+        Long idArea,
         String nombreUsuario,
         String nombres,
         String correo,
-        String estado,
-        Long idRol,
+        Boolean estado,
         String nombreRol,
-        Long idArea,
         String nombreArea
 ) {}

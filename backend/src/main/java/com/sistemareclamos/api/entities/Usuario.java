@@ -27,8 +27,8 @@ public class Usuario {
     @Column(nullable = false, length = 255)
     private String contrasena;
 
-    @Column(nullable = false, length = 20)
-    private String estado = "ACTIVO";
+    @Column(nullable = false)
+    private Boolean estado = true;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_rol", nullable = false)

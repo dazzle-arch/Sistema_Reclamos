@@ -19,7 +19,4 @@ public class Rol {
 
     @Column(length = 255)
     private String descripcion;
-
-    @Column(length = 1000)
-    private String permisos; //Posiblemente permisos se convierta en una tabla aparte
 }
