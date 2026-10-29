@@ -100,8 +100,15 @@ public class UsuarioServiImpl implements UsuarioService {
 
     private UsuarioResponseDTO toResponse(Usuario u) {
         return new UsuarioResponseDTO(
-                u.getIdUsuario(), u.getNombreUsuario(), u.getNombres(), u.getCorreo(), u.getEstado(),
-                u.getRol().getIdRol(), u.getRol().getNombre(),
-                u.getArea().getIdArea(), u.getArea().getNombre());
+                u.getIdUsuario(),
+                u.getRol().getIdRol(),
+                u.getArea().getIdArea(),
+                u.getNombreUsuario(),
+                u.getNombres(),
+                u.getCorreo(),
+                u.getEstado(),
+                u.getRol().getNombre(),
+                u.getArea().getNombre()
+        );
     }
 }
