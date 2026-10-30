@@ -2,6 +2,7 @@ package com.sistemareclamos.api.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 @Entity
 @Table(name = "categoria")
@@ -17,4 +18,7 @@ public class Categoria {
 
     @Column(length = 255)
     private String descripcion;
+
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reclamo> reclamos;
 }
