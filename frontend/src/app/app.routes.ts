@@ -10,6 +10,9 @@ import { Reportes } from './features/admin/reportes/reportes';
 import { Usuarios } from './features/admin/usuarios/usuarios';
 import { BandejaCasos as BandejaCasosFuncionario } from './features/funcionario/bandeja-casos/bandeja-casos';
 import { AtenderCaso } from './features/funcionario/atender-caso/atender-caso';
+import { DetalleReclamo } from './features/admin/detalle-reclamo/detalle-reclamo';
+import { DerivarCaso } from './features/admin/derivar-caso/derivar-caso';
+import { FormularioUsuario } from './features/admin/formulario-usuario/formulario-usuario';
 
 export const routes: Routes = [
     {path: '', component: Home},
@@ -19,10 +22,13 @@ export const routes: Routes = [
     {path: 'consultar-estado', component: ConsultarEstado},
     {path: 'detalle-tramite', component: DetalleTramite},
     {path: 'admin/panel-control', component: PanelControl},
-    {path: 'admin/bandeja-casos', component: BandejaCasos },
-    {path: 'admin/reportes', component: Reportes },
-    {path: 'admin/usuarios', component: Usuarios },
-    { path: 'funcionario/bandeja-casos', component: BandejaCasosFuncionario },
-    { path: 'funcionario/atender-caso/:id', component: AtenderCaso },
+    {path: 'admin/bandeja-casos', component: BandejaCasos},
+    {path: 'admin/reportes', component: Reportes},
+    {path: 'admin/usuarios', component: Usuarios},
+    {path: 'funcionario/bandeja-casos', component: BandejaCasosFuncionario},
+    {path: 'funcionario/atender-caso/:id', component: AtenderCaso},
+    {path: 'admin/detalle-reclamo', component: DetalleReclamo},
+    {path: 'admin/derivar-caso', component: DerivarCaso},
+    {path: 'admin/formulario-usuario', component: FormularioUsuario},
 
 ];

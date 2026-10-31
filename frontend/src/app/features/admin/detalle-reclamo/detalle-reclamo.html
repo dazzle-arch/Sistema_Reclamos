@@ -1,0 +1,67 @@
+<main class="panel-container d-flex justify-content-center align-items-center py-5">
+  <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
+
+    <app-sidebar-admin></app-sidebar-admin>
+
+    <div class="content flex-grow-1 p-4">
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold m-0">Reclamo N°</h4>
+        <a routerLink="/admin/bandeja-casos" class="btn btn-outline-danger btn-sm">Volver a la bandeja</a>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-6">
+          <div class="border rounded p-3 h-100">
+            <h6 class="fw-bold text-danger">Datos del ciudadano</h6>
+            <p class="mb-1"><span class="fw-bold">Nombre:</span></p>
+            <p class="mb-1"><span class="fw-bold">DNI:</span></p>
+            <p class="mb-1"><span class="fw-bold">Teléfono:</span></p>
+            <p class="mb-0"><span class="fw-bold">Correo:</span></p>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="border rounded p-3 h-100">
+            <h6 class="fw-bold text-danger">Datos del reclamo</h6>
+            <p class="mb-1"><span class="fw-bold">Categoría:</span></p>
+            <p class="mb-1"><span class="fw-bold">Fecha:</span></p>
+            <p class="mb-1"><span class="fw-bold">Prioridad:</span></p>
+            <p class="mb-1"><span class="fw-bold">Área:</span></p>
+            <p class="mb-0"><span class="fw-bold">Estado:</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="border rounded p-3 mb-4">
+        <h6 class="fw-bold text-danger">Asunto</h6>
+        <p class="mb-0">Descripción</p>
+      </div>
+
+      <h6 class="fw-bold">Historial de trazabilidad</h6>
+      <table class="table-trazabilidad text-center align-middle mb-4">
+        <thead>
+          <tr>
+            <th>Fecha y hora</th>
+            <th>Acción realizada</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="text-end">
+        <a routerLink="/admin/derivar-caso" class="btn btn-danger fw-bold px-4">Derivar caso</a>
+      </div>
+
+    </div>
+  </div>
+</main>

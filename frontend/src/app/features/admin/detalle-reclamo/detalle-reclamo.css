@@ -1,0 +1,21 @@
+main.panel-container {
+  min-height: 100vh;
+  background-image: url('/img/fondo-machupicchu.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.table-trazabilidad {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-trazabilidad th,
+.table-trazabilidad td {
+  border: 2px solid #dc3545;
+  padding: 0.75rem;
+}
+
+.table-trazabilidad tbody tr:hover td {
+  background-color: #fde8ea;
+}
