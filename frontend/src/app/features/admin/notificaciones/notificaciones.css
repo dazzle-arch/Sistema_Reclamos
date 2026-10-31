@@ -1,0 +1,16 @@
+main.panel-container {
+    min-height: 100vh;
+    background-image: url('/img/fondo-machupicchu.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.notificacion-item {
+    border: 2px solid #dc3545;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.notificacion-item:hover {
+    background-color: #fde8ea;
+}

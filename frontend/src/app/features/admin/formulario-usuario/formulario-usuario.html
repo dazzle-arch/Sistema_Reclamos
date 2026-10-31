@@ -1,0 +1,75 @@
+<main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
+
+        <app-sidebar-admin></app-sidebar-admin>
+
+        <div class="content flex-grow-1 p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0">Datos del usuario</h4>
+                <a routerLink="/admin/usuarios" class="btn btn-outline-danger btn-sm">Volver a usuarios</a>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">NOMBRES</label>
+                <div class="col-9">
+                <input type="text" class="form-control">
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">NOMBRE DE USUARIO</label>
+                <div class="col-9">
+                <input type="text" class="form-control">
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">CORREO</label>
+                <div class="col-9">
+                <input type="email" class="form-control">
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">CONTRASEÑA</label>
+                <div class="col-9">
+                <input type="password" class="form-control">
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">ROL</label>
+                <div class="col-9">
+                <select class="form-select">
+                    <option value="" selected disabled>Seleccione un rol</option>
+                </select>
+                </div>
+            </div>
+
+            <div class="row mb-3 align-items-center">
+                <label class="col-3 text-end fw-bold">ÁREA</label>
+                <div class="col-9">
+                <select class="form-select">
+                    <option value="" selected disabled>Seleccione un área</option>
+                </select>
+                </div>
+            </div>
+
+            <div class="row mb-4 align-items-center">
+                <label class="col-3 text-end fw-bold">ESTADO</label>
+                <div class="col-9">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" checked>
+                    <label class="form-check-label">Activo</label>
+                </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a routerLink="/admin/usuarios" class="btn btn-outline-secondary">Cancelar</a>
+                <button class="btn btn-danger fw-bold px-4">Guardar</button>
+            </div>
+        </div>
+    </div>
+</main>
