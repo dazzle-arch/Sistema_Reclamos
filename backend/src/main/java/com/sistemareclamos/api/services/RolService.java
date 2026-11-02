@@ -9,5 +9,5 @@ public interface RolService {
     RolResponseDTO obtenerPorId(Long id);
     RolResponseDTO crear(RolRequestDTO dto);
     RolResponseDTO actualizar(Long id, RolRequestDTO dto);
-    boolean eliminar(Long id);
+    void eliminar(Long id);
 }

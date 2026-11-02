@@ -1,9 +1,11 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { SidebarAdmin } from '../../../shared/components/sidebar-admin/sidebar-admin';  
+import { CampanaNotificaciones } from '../../../shared/components/campana-notificaciones/campana-notificaciones';
+
 
 @Component({
-  imports: [SidebarAdmin],
+  imports: [SidebarAdmin, CampanaNotificaciones],
   selector: 'app-panel-control',
   styleUrl: './panel-control.css',
   templateUrl: './panel-control.html',

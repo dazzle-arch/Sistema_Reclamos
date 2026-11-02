@@ -10,5 +10,6 @@ public interface UsuarioService {
     UsuarioResponseDTO obtenerPorNombreUsuario(String nombreUsuario);
     UsuarioResponseDTO crear(UsuarioRequestDTO dto);
     UsuarioResponseDTO actualizar(Long id, UsuarioRequestDTO dto);
-    boolean eliminar(Long id);
+    UsuarioResponseDTO cambiarEstado(Long id, boolean estado);
+    void eliminar(Long id);
 }

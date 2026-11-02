@@ -19,27 +19,23 @@ public class ReclamoController {
     private final ReclamoService service;
 
     @GetMapping
-    public ResponseEntity<List<ReclamoResponseDTO>> listar() {
-        return ResponseEntity.ok(service.listar());
+    public List<ReclamoResponseDTO> listar() {
+        return service.listar();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReclamoResponseDTO> obtenerPorId(@PathVariable Long id) {
-        ReclamoResponseDTO reclamo = service.obtenerPorId(id);
-        return reclamo != null ? ResponseEntity.ok(reclamo) : ResponseEntity.notFound().build();
+    public ReclamoResponseDTO obtenerPorId(@PathVariable Long id) {
+        return service.obtenerPorId(id);
     }
 
     @PostMapping
-    public ResponseEntity<ReclamoResponseDTO> crear(@Valid @RequestBody ReclamoRequestDTO dto) {
-        ReclamoResponseDTO nuevo = service.crear(dto);
-        return nuevo != null
-                ? ResponseEntity.status(HttpStatus.CREATED).body(nuevo)
-                : ResponseEntity.badRequest().build();
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReclamoResponseDTO crear(@Valid @RequestBody ReclamoRequestDTO dto) {
+        return service.crear(dto);
     }
 
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<ReclamoResponseDTO> actualizarEstado(@PathVariable Long id, @RequestParam String estado) {
-        ReclamoResponseDTO actualizado = service.actualizarEstado(id, estado);
-        return actualizado != null ? ResponseEntity.ok(actualizado) : ResponseEntity.notFound().build();
+    public ReclamoResponseDTO actualizarEstado(@PathVariable Long id, @RequestParam String estado) {
+        return service.actualizarEstado(id, estado);
     }
 }

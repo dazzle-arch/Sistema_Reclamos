@@ -5,20 +5,27 @@ import com.sistemareclamos.api.dtos.UsuarioResponseDTO;
 import com.sistemareclamos.api.entities.Area;
 import com.sistemareclamos.api.entities.Rol;
 import com.sistemareclamos.api.entities.Usuario;
+import com.sistemareclamos.api.exception.ConflictoException;
+import com.sistemareclamos.api.exception.RecursoNoEncontradoException;
+import com.sistemareclamos.api.exception.SolicitudInvalidaException;
 import com.sistemareclamos.api.repositories.AreaRepository;
 import com.sistemareclamos.api.repositories.RolRepository;
 import com.sistemareclamos.api.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UsuarioServiImpl implements UsuarioService {
 
     private final UsuarioRepository repository;
     private final RolRepository rolRepository;
     private final AreaRepository areaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<UsuarioResponseDTO> listar() {
@@ -27,75 +34,94 @@ public class UsuarioServiImpl implements UsuarioService {
 
     @Override
     public UsuarioResponseDTO obtenerPorId(Long id) {
-        return repository.findById(id).map(this::toResponse).orElse(null);
+        return toResponse(buscar(id));
     }
 
     @Override
     public UsuarioResponseDTO obtenerPorNombreUsuario(String nombreUsuario) {
-        return repository.findByNombreUsuario(nombreUsuario).map(this::toResponse).orElse(null);
+        return repository.findByNombreUsuario(nombreUsuario)
+                .map(this::toResponse)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado: " + nombreUsuario));
     }
 
     @Override
+    @Transactional
     public UsuarioResponseDTO crear(UsuarioRequestDTO dto) {
         if (dto.contrasena() == null || dto.contrasena().isBlank()) {
-            return null; // contraseña obligatoria al crear
+            throw new SolicitudInvalidaException("La contraseña es obligatoria al crear un usuario");
         }
-        if (repository.existsByCorreo(dto.correo())
-                || repository.existsByNombreUsuario(dto.nombreUsuario())) {
-            return null; // correo o nombre de usuario repetido
+        if (repository.existsByCorreo(dto.correo())) {
+            throw new ConflictoException("El correo ya está registrado");
         }
-        Rol rol = rolRepository.findById(dto.idRol()).orElse(null);
-        Area area = areaRepository.findById(dto.idArea()).orElse(null);
-        if (rol == null || area == null) {
-            return null;
+        if (repository.existsByNombreUsuario(dto.nombreUsuario())) {
+            throw new ConflictoException("El nombre de usuario ya está registrado");
         }
 
         Usuario usuario = new Usuario();
         usuario.setNombreUsuario(dto.nombreUsuario());
         usuario.setNombres(dto.nombres());
         usuario.setCorreo(dto.correo());
-        usuario.setContrasena(dto.contrasena());
-        usuario.setRol(rol);
-        usuario.setArea(area);
+        usuario.setContrasena(passwordEncoder.encode(dto.contrasena()));
+        usuario.setRol(buscarRol(dto.idRol()));
+        usuario.setArea(buscarArea(dto.idArea()));
 
         return toResponse(repository.save(usuario));
     }
 
     @Override
+    @Transactional
     public UsuarioResponseDTO actualizar(Long id, UsuarioRequestDTO dto) {
-        Usuario actual = repository.findById(id).orElse(null);
-        if (actual == null) {
-            return null; // no existe
+        Usuario actual = buscar(id);
+
+        if (repository.existsByCorreoAndIdUsuarioNot(dto.correo(), id)) {
+            throw new ConflictoException("El correo ya está registrado");
         }
-        if (repository.existsByCorreoAndIdUsuarioNot(dto.correo(), id)
-                || repository.existsByNombreUsuarioAndIdUsuarioNot(dto.nombreUsuario(), id)) {
-            return null; // repetido en otro usuario
-        }
-        Rol rol = rolRepository.findById(dto.idRol()).orElse(null);
-        Area area = areaRepository.findById(dto.idArea()).orElse(null);
-        if (rol == null || area == null) {
-            return null;
+        if (repository.existsByNombreUsuarioAndIdUsuarioNot(dto.nombreUsuario(), id)) {
+            throw new ConflictoException("El nombre de usuario ya está registrado");
         }
 
         actual.setNombreUsuario(dto.nombreUsuario());
         actual.setNombres(dto.nombres());
         actual.setCorreo(dto.correo());
         if (dto.contrasena() != null && !dto.contrasena().isBlank()) {
-            actual.setContrasena(dto.contrasena());
+            actual.setContrasena(passwordEncoder.encode(dto.contrasena()));
         }
-        actual.setRol(rol);
-        actual.setArea(area);
+        actual.setRol(buscarRol(dto.idRol()));
+        actual.setArea(buscarArea(dto.idArea()));
 
         return toResponse(repository.save(actual));
     }
 
     @Override
-    public boolean eliminar(Long id) {
+    @Transactional
+    public UsuarioResponseDTO cambiarEstado(Long id, boolean estado) {
+        Usuario usuario = buscar(id);
+        usuario.setEstado(estado);
+        return toResponse(repository.save(usuario));
+    }
+
+    @Override
+    @Transactional
+    public void eliminar(Long id) {
         if (!repository.existsById(id)) {
-            return false;
+            throw new RecursoNoEncontradoException("Usuario no encontrado con id: " + id);
         }
         repository.deleteById(id);
-        return true;
+    }
+
+    private Usuario buscar(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con id: " + id));
+    }
+
+    private Rol buscarRol(Long idRol) {
+        return rolRepository.findById(idRol)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Rol no encontrado con id: " + idRol));
+    }
+
+    private Area buscarArea(Long idArea) {
+        return areaRepository.findById(idArea)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Área no encontrada con id: " + idArea));
     }
 
     private UsuarioResponseDTO toResponse(Usuario u) {

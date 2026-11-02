@@ -1,4 +1,4 @@
- package com.sistemareclamos.api.entities;
+package com.sistemareclamos.api.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;

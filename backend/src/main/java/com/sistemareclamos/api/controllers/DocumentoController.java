@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
 public class DocumentoController {
+
     private final DocumentoService service;
 
     @GetMapping
@@ -23,16 +24,18 @@ public class DocumentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DocumentoResponseDTO> obtenerPorId(@PathVariable Long id) {
-        DocumentoResponseDTO dto = service.obtenerPorId(id);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    public DocumentoResponseDTO obtenerPorId(@PathVariable Long id) {
+        return service.obtenerPorId(id);
+    }
+
+    @GetMapping("/reclamo/{idReclamo}")
+    public List<DocumentoResponseDTO> listarPorReclamo(@PathVariable Long idReclamo) {
+        return service.listarPorReclamo(idReclamo);
     }
 
     @PostMapping
-    public ResponseEntity<DocumentoResponseDTO> crear(@Valid @RequestBody DocumentoRequestDTO dto) {
-        DocumentoResponseDTO creado = service.crear(dto);
-        return creado == null
-                ? ResponseEntity.badRequest().build() // el reclamo no existe
-                : ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    @ResponseStatus(HttpStatus.CREATED)
+    public DocumentoResponseDTO crear(@Valid @RequestBody DocumentoRequestDTO dto) {
+        return service.crear(dto);
     }
 }

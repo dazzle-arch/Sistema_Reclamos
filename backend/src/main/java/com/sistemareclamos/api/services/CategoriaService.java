@@ -8,5 +8,5 @@ public interface CategoriaService {
     CategoriaResponseDTO obtenerPorId(Long id);
     CategoriaResponseDTO crear(CategoriaRequestDTO dto);
     CategoriaResponseDTO actualizar(Long id, CategoriaRequestDTO dto);
-    boolean eliminar(Long id);
+    void eliminar(Long id);
 }

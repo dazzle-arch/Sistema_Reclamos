@@ -20,9 +20,18 @@ public class NotificacionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NotificacionResponseDTO> obtenerPorId(@PathVariable Long id) {
-        NotificacionResponseDTO dto = service.obtenerPorId(id);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    public NotificacionResponseDTO obtenerPorId(@PathVariable Long id) {
+        return service.obtenerPorId(id);
+    }
+
+    @GetMapping("/usuario/{idUsuario}")
+    public List<NotificacionResponseDTO> listarPorUsuario(@PathVariable Long idUsuario) {
+        return service.listarPorUsuario(idUsuario);
+    }
+
+    @GetMapping("/reclamo/{idReclamo}")
+    public List<NotificacionResponseDTO> listarPorReclamo(@PathVariable Long idReclamo) {
+        return service.listarPorReclamo(idReclamo);
     }
 
 }

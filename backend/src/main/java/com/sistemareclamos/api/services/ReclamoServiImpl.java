@@ -4,18 +4,21 @@ import com.sistemareclamos.api.dtos.ReclamoResponseDTO;
 import com.sistemareclamos.api.entities.Categoria;
 import com.sistemareclamos.api.entities.Ciudadano;
 import com.sistemareclamos.api.entities.Reclamo;
+import com.sistemareclamos.api.exception.RecursoNoEncontradoException;
+import com.sistemareclamos.api.exception.SolicitudInvalidaException;
 import com.sistemareclamos.api.repositories.CategoriaRepository;
 import com.sistemareclamos.api.repositories.CiudadanoRepository;
 import com.sistemareclamos.api.repositories.ReclamoRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReclamoServiImpl implements ReclamoService {
 
     private static final List<String> ESTADOS_VALIDOS =
@@ -32,28 +35,18 @@ public class ReclamoServiImpl implements ReclamoService {
 
     @Override
     public ReclamoResponseDTO obtenerPorId(Long id) {
-        return repository.findById(id).map(this::toResponse).orElse(null);
+        return toResponse(buscar(id));
     }
 
     @Override
     @Transactional
     public ReclamoResponseDTO crear(ReclamoRequestDTO dto) {
-        Categoria categoria = categoriaRepository.findById(dto.tipoReclamo()).orElse(null);
-        if (categoria == null) {
-            return null; // categoría no encontrada
-        }
+        Categoria categoria = categoriaRepository.findById(dto.tipoReclamo())
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "Categoría no encontrada con id: " + dto.tipoReclamo()));
 
-        Ciudadano ciudadano = ciudadanoRepository.findByDni(dto.dni()).orElse(null);
-        if (ciudadano == null) {
-            ciudadano = new Ciudadano();
-            ciudadano.setDni(dto.dni());
-            ciudadano.setNombres(dto.nombres());
-            ciudadano.setApellidos(dto.apellidos());
-            ciudadano.setCorreo(dto.correo());
-            ciudadano.setTelefono(dto.telefono());
-            ciudadano.setSexo(dto.sexo());
-            ciudadano = ciudadanoRepository.save(ciudadano);
-        }
+        Ciudadano ciudadano = ciudadanoRepository.findByDni(dto.dni())
+                .orElseGet(() -> crearCiudadano(dto));
 
         Reclamo reclamo = new Reclamo();
         reclamo.setCiudadano(ciudadano);
@@ -68,16 +61,31 @@ public class ReclamoServiImpl implements ReclamoService {
     }
 
     @Override
+    @Transactional
     public ReclamoResponseDTO actualizarEstado(Long id, String nuevoEstado) {
         if (nuevoEstado == null || !ESTADOS_VALIDOS.contains(nuevoEstado.toUpperCase())) {
-            return null; // estado no permitido
+            throw new SolicitudInvalidaException("Estado no permitido. Valores válidos: " + ESTADOS_VALIDOS);
         }
-        Reclamo reclamo = repository.findById(id).orElse(null);
-        if (reclamo == null) {
-            return null; // no existe
-        }
+        Reclamo reclamo = buscar(id);
         reclamo.setEstado(nuevoEstado.toUpperCase());
+
         return toResponse(repository.save(reclamo));
+    }
+
+    private Reclamo buscar(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reclamo no encontrado con id: " + id));
+    }
+
+    private Ciudadano crearCiudadano(ReclamoRequestDTO dto) {
+        Ciudadano ciudadano = new Ciudadano();
+        ciudadano.setDni(dto.dni());
+        ciudadano.setNombres(dto.nombres());
+        ciudadano.setApellidos(dto.apellidos());
+        ciudadano.setCorreo(dto.correo());
+        ciudadano.setTelefono(dto.telefono());
+        ciudadano.setSexo(dto.sexo());
+        return ciudadanoRepository.save(ciudadano);
     }
 
     private ReclamoResponseDTO toResponse(Reclamo r) {

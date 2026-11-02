@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { SidebarAdmin } from '../../../shared/components/sidebar-admin/sidebar-admin';
 import { RouterLink } from '@angular/router';
+import { SidebarAdmin } from '../../../shared/components/sidebar-admin/sidebar-admin';
+import { CampanaNotificaciones } from '../../../shared/components/campana-notificaciones/campana-notificaciones';
+
 
 @Component({
-  imports: [SidebarAdmin, RouterLink],
+  imports: [SidebarAdmin, CampanaNotificaciones, RouterLink],
   selector: 'app-derivar-caso',
   styleUrl: './derivar-caso.css',
   templateUrl: './derivar-caso.html',
