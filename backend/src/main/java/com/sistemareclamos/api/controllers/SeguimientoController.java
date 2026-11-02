@@ -23,16 +23,18 @@ public class SeguimientoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SeguimientoResponseDTO> obtenerPorId(@PathVariable Long id) {
-        SeguimientoResponseDTO dto = service.obtenerPorId(id);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    public SeguimientoResponseDTO obtenerPorId(@PathVariable Long id) {
+        return service.obtenerPorId(id);
+    }
+
+    @GetMapping("/reclamo/{idReclamo}")
+    public List<SeguimientoResponseDTO> listarPorReclamo(@PathVariable Long idReclamo) {
+        return service.listarPorReclamo(idReclamo);
     }
 
     @PostMapping
-    public ResponseEntity<SeguimientoResponseDTO> crear(@Valid @RequestBody SeguimientoRequestDTO dto) {
-        SeguimientoResponseDTO creado = service.crear(dto);
-        return creado == null
-                ? ResponseEntity.badRequest().build() // reclamo o usuario no existen
-                : ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    @ResponseStatus(HttpStatus.CREATED)
+    public SeguimientoResponseDTO crear(@Valid @RequestBody SeguimientoRequestDTO dto) {
+        return service.crear(dto);
     }
 }

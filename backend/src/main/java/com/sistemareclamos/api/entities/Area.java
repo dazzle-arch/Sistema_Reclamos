@@ -14,7 +14,7 @@ public class Area {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idArea;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, unique = true, length = 100)
     private String nombre;
 
     @Column(length = 255)

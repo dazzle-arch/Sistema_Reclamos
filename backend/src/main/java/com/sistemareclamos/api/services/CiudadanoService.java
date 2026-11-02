@@ -10,5 +10,5 @@ public interface CiudadanoService {
     CiudadanoResponseDTO obtenerPorDni(String dni);
     CiudadanoResponseDTO crear(CiudadanoRequestDTO dto);
     CiudadanoResponseDTO actualizar(Long id, CiudadanoRequestDTO dto);
-    boolean eliminar(Long id);
+    void eliminar(Long id);
 }

@@ -13,6 +13,7 @@ import { AtenderCaso } from './features/funcionario/atender-caso/atender-caso';
 import { DetalleReclamo } from './features/admin/detalle-reclamo/detalle-reclamo';
 import { DerivarCaso } from './features/admin/derivar-caso/derivar-caso';
 import { FormularioUsuario } from './features/admin/formulario-usuario/formulario-usuario';
+import { Notificaciones } from './features/admin/notificaciones/notificaciones';
 
 export const routes: Routes = [
     {path: '', component: Home},
@@ -30,5 +31,6 @@ export const routes: Routes = [
     {path: 'admin/detalle-reclamo', component: DetalleReclamo},
     {path: 'admin/derivar-caso', component: DerivarCaso},
     {path: 'admin/formulario-usuario', component: FormularioUsuario},
+    {path: 'admin/notificaciones', component: Notificaciones},
 
 ];

@@ -8,4 +8,6 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 
     boolean existsByNombre(String nombre);
 
+    boolean existsByNombreAndIdCategoriaNot(String nombre, Long idCategoria);
+
 }

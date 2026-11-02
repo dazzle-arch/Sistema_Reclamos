@@ -23,28 +23,24 @@ public class RolController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RolResponseDTO> obtenerPorId(@PathVariable Long id) {
-        RolResponseDTO dto = service.obtenerPorId(id);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    public RolResponseDTO obtenerPorId(@PathVariable Long id) {
+        return service.obtenerPorId(id);
     }
 
     @PostMapping
-    public ResponseEntity<RolResponseDTO> crear(@Valid @RequestBody RolRequestDTO dto) {
-        RolResponseDTO creado = service.crear(dto);
-        return creado == null
-                ? ResponseEntity.badRequest().build()
-                : ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    @ResponseStatus(HttpStatus.CREATED)
+    public RolResponseDTO crear(@Valid @RequestBody RolRequestDTO dto) {
+        return service.crear(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RolResponseDTO> actualizar(@PathVariable Long id, @Valid @RequestBody RolRequestDTO dto) {
-        RolResponseDTO actualizado = service.actualizar(id, dto);
-        return actualizado == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(actualizado);
+    public RolResponseDTO actualizar(@PathVariable Long id, @Valid @RequestBody RolRequestDTO dto) {
+        return service.actualizar(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (!service.eliminar(id)) return ResponseEntity.notFound().build();
-        return ResponseEntity.noContent().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
+        service.eliminar(id);
     }
 }

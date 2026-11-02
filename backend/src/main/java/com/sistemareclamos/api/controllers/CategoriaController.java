@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
 public class CategoriaController {
+
     private final CategoriaService service;
 
     @GetMapping
@@ -23,37 +24,24 @@ public class CategoriaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaResponseDTO> obtenerPorId(@PathVariable Long id) {
-        CategoriaResponseDTO dto = service.obtenerPorId(id);
-        if (dto == null) {
-            return ResponseEntity.notFound().build(); // 404
-        }
-        return ResponseEntity.ok(dto); // 200
+    public CategoriaResponseDTO obtenerPorId(@PathVariable Long id) {
+        return service.obtenerPorId(id);
     }
 
     @PostMapping
-    public ResponseEntity<CategoriaResponseDTO> crear(@Valid @RequestBody CategoriaRequestDTO dto) {
-        CategoriaResponseDTO creado = service.crear(dto);
-        if (creado == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409: nombre repetido
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(creado); // 201
+    @ResponseStatus(HttpStatus.CREATED)
+    public CategoriaResponseDTO crear(@Valid @RequestBody CategoriaRequestDTO dto) {
+        return service.crear(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriaResponseDTO> actualizar(@PathVariable Long id, @Valid @RequestBody CategoriaRequestDTO dto) {
-        CategoriaResponseDTO actualizado = service.actualizar(id, dto);
-        if (actualizado == null) {
-            return ResponseEntity.badRequest().build(); // no existe o nombre repetido
-        }
-        return ResponseEntity.ok(actualizado); // 200
+    public CategoriaResponseDTO actualizar(@PathVariable Long id, @Valid @RequestBody CategoriaRequestDTO dto) {
+        return service.actualizar(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (!service.eliminar(id)) {
-            return ResponseEntity.notFound().build(); // 404
-        }
-        return ResponseEntity.noContent().build(); // 204
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
+        service.eliminar(id);
     }
 }

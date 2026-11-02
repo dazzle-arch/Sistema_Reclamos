@@ -24,28 +24,24 @@ public class AreaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AreaResponseDTO> obtenerPorId(@PathVariable Long id) {
-        AreaResponseDTO dto = service.obtenerPorId(id);
-        return dto == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
+    public AreaResponseDTO obtenerPorId(@PathVariable Long id) {
+        return service.obtenerPorId(id);
     }
 
     @PostMapping
-    public ResponseEntity<AreaResponseDTO> crear(@Valid @RequestBody AreaRequestDTO dto) {
-        AreaResponseDTO creado = service.crear(dto);
-        return creado == null
-                ? ResponseEntity.badRequest().build()
-                : ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    @ResponseStatus(HttpStatus.CREATED)
+    public AreaResponseDTO crear(@Valid @RequestBody AreaRequestDTO dto) {
+        return service.crear(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AreaResponseDTO> actualizar(@PathVariable Long id, @Valid @RequestBody AreaRequestDTO dto) {
-        AreaResponseDTO actualizado = service.actualizar(id, dto);
-        return actualizado == null ? ResponseEntity.badRequest().build() : ResponseEntity.ok(actualizado);
+    public AreaResponseDTO actualizar(@PathVariable Long id, @Valid @RequestBody AreaRequestDTO dto) {
+        return service.actualizar(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (!service.eliminar(id)) return ResponseEntity.notFound().build();
-        return ResponseEntity.noContent().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
+        service.eliminar(id);
     }
 }

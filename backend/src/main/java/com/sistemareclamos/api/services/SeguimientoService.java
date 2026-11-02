@@ -7,5 +7,6 @@ import java.util.List;
 public interface SeguimientoService {
     List<SeguimientoResponseDTO> listar();
     SeguimientoResponseDTO obtenerPorId(Long id);
+    List<SeguimientoResponseDTO> listarPorReclamo(Long idReclamo);
     SeguimientoResponseDTO crear(SeguimientoRequestDTO dto);
 }

@@ -9,5 +9,5 @@ public interface AreaService {
     AreaResponseDTO obtenerPorId(Long id);
     AreaResponseDTO crear(AreaRequestDTO dto);
     AreaResponseDTO actualizar(Long id, AreaRequestDTO dto);
-    boolean eliminar(Long id);
+    void eliminar(Long id);
 }
