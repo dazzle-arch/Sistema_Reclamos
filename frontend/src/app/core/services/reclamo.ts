@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable} from 'rxjs';
-import { Reclamo } from '../models/reclamo.model';
+import { ReclamoResponse } from '../models/reclamoResponse.mode';
+import { ReclamoRequest } from '../models/reclamoRequest.model';
 import { environment } from '../../../environments/environment.development';
 
 @Injectable({
@@ -12,20 +13,24 @@ export class ReclamoService{
 
     constructor(private http: HttpClient){}
 
-    listar(): Observable<Reclamo[]>{
-        return this.http.get<Reclamo[]>(this.apiUrl)
+    listar(): Observable<ReclamoResponse[]>{
+        return this.http.get<ReclamoResponse[]>(this.apiUrl)
     }
 
-    buscarPorId(id: number): Observable<Reclamo> {
-        return this.http.get<Reclamo>(`${this.apiUrl}/${id}`)
+    buscarPorId(id: number): Observable<ReclamoResponse> {
+        return this.http.get<ReclamoResponse>(`${this.apiUrl}/${id}`)
     }
 
-    crear(reclamo: Reclamo): Observable<Reclamo> {
-        return this.http.post<Reclamo>(this.apiUrl, reclamo)
+    crear(reclamo: ReclamoRequest): Observable<ReclamoResponse> {
+        return this.http.post<ReclamoResponse>(this.apiUrl, reclamo);
     }
 
-    actualizar(id: number, reclamo: Reclamo): Observable<Reclamo> {
-        return this.http.put<Reclamo>(`${this.apiUrl}/${id}`, reclamo)
+    consultar(codigo: number, dni: string): Observable<ReclamoResponse> {
+        return this.http.get<ReclamoResponse>(`${this.apiUrl}/consulta`, { params: { codigo, dni } });
     }
+
+    actualizarEstado(id: number, estado: string): Observable<ReclamoResponse> {
+        return this.http.patch<ReclamoResponse>(`${this.apiUrl}/${id}/estado`, null, { params: { estado } });
+}
 }
 
