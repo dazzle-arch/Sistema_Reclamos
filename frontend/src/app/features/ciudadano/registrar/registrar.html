@@ -37,7 +37,7 @@
                         @if (formularioReclamo.get('dni')?.errors?.['required'] && formularioReclamo.get('dni')?.touched) {
                             <small class="text-danger">Requerido.</small>
                         }
-                        @if (formularioReclamo.get('dni')?.errors?.['pattern']) {
+                        @if (formularioReclamo.get('dni')?.errors?.['pattern'] && formularioReclamo.get('dni')?.touched) {
                             <small class="text-danger">Debe tener 8 numeros</small>
                         }
                     </div>
@@ -48,7 +48,7 @@
                         @if (formularioReclamo.get('telefono')?.errors?.['required'] && formularioReclamo.get('telefono')?.touched) {
                             <small class="text-danger">Requerido.</small>
                         }
-                        @if (formularioReclamo.get('telefono')?.errors?.['pattern']) {
+                        @if (formularioReclamo.get('telefono')?.errors?.['pattern'] && formularioReclamo.get('telefono')?.touched) {
                             <small class="text-danger">Debe tener 9 numeros</small>
                         }
                     </div>
@@ -68,11 +68,11 @@
                 <div class="row mb-3 align-items-center">
                     <label class="col-3 text-end fw-bold">CORREO</label>
                     <div class="col-9">
-                        <input type="text" class="form-control" formControlName="correo">
+                        <input type="email" class="form-control" formControlName="correo">
                         @if (formularioReclamo.get('correo')?.errors?.['required'] && formularioReclamo.get('correo')?.touched) {
                             <small class="text-danger">Requerido.</small>
                         }
-                        @if (formularioReclamo.get('correo')?.errors?.['email']) {
+                        @if (formularioReclamo.get('correo')?.errors?.['email'] && formularioReclamo.get('correo')?.touched) {
                             <small class="text-danger">Debe insertar un correo valido @</small>
                         }
                     </div>
@@ -95,6 +95,19 @@
                 </div>
 
                 <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">ASUNTO</label>
+                    <div class="col-9">
+                        <input type="text" class="form-control" formControlName="asunto">
+                        @if (formularioReclamo.get('asunto')?.errors?.['required'] && formularioReclamo.get('asunto')?.touched) {
+                            <small class="text-danger">El asunto es obligatorio.</small>
+                        }
+                        @if (formularioReclamo.get('asunto')?.errors?.['maxlength']) {
+                            <small class="text-danger">Máximo 150 caracteres.</small>
+                        }
+                    </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
                     <label class="col-3 text-end fw-bold">DESCRIPCION</label>
                     <div class="col-9">
                         <textarea class="form-control" rows="5" formControlName="descripcion"></textarea>
@@ -102,8 +115,8 @@
                         @if (formularioReclamo.get('descripcion')?.errors?.['required'] && formularioReclamo.get('descripcion')?.touched) {
                             <small class="text-danger">Requerido.</small>
                         }
-                        @if (formularioReclamo.get('descripcion')?.errors?.['minlength']) {
-                            <small class="text-danger">Escribe al menos 10 caracteres.</small>
+                        @if (formularioReclamo.get('descripcion')?.errors?.['minlength'] && formularioReclamo.get('descripcion')?.touched) {
+                            <small class="text-danger">Maximo 500 caracteres</small>
                         }
                     </div>
                 </div>
@@ -111,13 +124,13 @@
                 <div class="row mb-3 align-items-center">
                     <label class="col-3 text-end fw-bold">EVIDENCIA</label>
                     <div class="col-9">
-                        <input type="file" class="form-control" formControlName="evidencia">
+                        <input type="file" class="form-control">
                         <div class="form-text">Adjuntar evidencia (opcional)</div>
                     </div>
                 </div>
 
                 <div class="text-center">
-                    <button class="btn btn-danger px-5 py-2 fw-bold">Enviar</button>
+                    <button type="submit" class="btn btn-danger px-5 py-2 fw-bold" [disabled]="enviando">Enviar</button>
                 </div>
 
             </div>
