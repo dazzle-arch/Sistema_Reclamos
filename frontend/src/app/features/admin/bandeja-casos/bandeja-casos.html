@@ -6,11 +6,17 @@
         <div class="content flex-grow-1 p-4">
             <div class="d-flex align-items-center gap-3 mb-4">
                 <div class="progress flex-grow-1" style="height: 12px; max-width: 400px;">
-                    <div class="progress-bar bg-primary" role="progressbar" style="width: 57%; background-color: #a78bfa;"></div>
+                    <div class="progress-bar bg-primary" role="progressbar" [style.width.%]="porcentajeCerrados"></div>
                 </div>
-                <span class="fs-2 fw-bold">57%</span>
+                <span class="fs-2 fw-bold">{{ porcentajeCerrados }}</span>
+                <span class="text-muted small">de reclamos cerrados</span>
             </div>
 
+            @if (cargando()){
+                <p class="text-muted">Cargando reclamos...</p>
+            } @else if (error()) {
+                <p class="text-danger">No se pudieron cargar los reclamos</p>
+            }
             <table class="table table-bordered text-center table-hover align-middle">
                 <thead>
                     <tr class="table-danger">
@@ -23,38 +29,24 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @for (r of reclamos(); track r.idReclamo) {
                     <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td><a routerLink="/admin/detalle-reclamo" class="btn btn-sm btn-danger">Ver</a></td>
+                        <td>{{ r.idReclamo }}</td>
+                        <td>{{ r.fechaRegistro | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ r.nombreCiudadano }}</td>
+                        <td>{{ r.nombreCategoria }}</td>
+                        <td>
+                            <span class="badge" [class]="'badge ' + claseEstado(r.estado)">{{ r.estado }}</span>
+                        </td>
+                        <td>
+                            <a [routerLink]="['/admin/detalle-reclamo', r.idReclamo]" class="btn btn-sm btn-danger">Ver</a>
+                        </td>
                     </tr>
+                    } @empty {
                     <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td><a routerLink="/admin/detalle-reclamo" class="btn btn-sm btn-danger">Ver</a></td>
+                        <td colspan="6" class="text-muted">No hay reclamos registrados.</td>
                     </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td><a routerLink="/admin/detalle-reclamo" class="btn btn-sm btn-danger">Ver</a></td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td><a routerLink="/admin/detalle-reclamo" class="btn btn-sm btn-danger">Ver</a></td>
-                    </tr>
+                    }
                 </tbody>
             </table>
         </div>

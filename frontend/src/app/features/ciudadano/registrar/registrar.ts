@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoriaService } from '../../../core/services/categoria';
 import { ReclamoService } from '../../../core/services/reclamo';
@@ -13,7 +13,7 @@ import { ReclamoRequest } from '../../../core/models/reclamoRequest.model';
 })
 export class Registrar implements OnInit{
   formularioReclamo: FormGroup;
-  categorias: Categoria[] = [];
+  categorias = signal<Categoria[]>([]);
   enviando = false;
 
   constructor(
@@ -40,7 +40,7 @@ export class Registrar implements OnInit{
 
   ngOnInit(): void {
     this.categoriaService.listar().subscribe({
-      next: (data) => this.categorias = data,
+      next: (data) => this.categorias.set(data),
       error: (error) => console.error('Error al cargar categorias', error)
     })
   }

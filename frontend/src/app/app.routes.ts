@@ -28,7 +28,7 @@ export const routes: Routes = [
     {path: 'admin/usuarios', component: Usuarios},
     {path: 'funcionario/bandeja-casos', component: BandejaCasosFuncionario},
     {path: 'funcionario/atender-caso/:id', component: AtenderCaso},
-    {path: 'admin/detalle-reclamo', component: DetalleReclamo},
+    {path: 'admin/detalle-reclamo/:id', component: DetalleReclamo},
     {path: 'admin/derivar-caso', component: DerivarCaso},
     {path: 'admin/formulario-usuario', component: FormularioUsuario},
     {path: 'admin/notificaciones', component: Notificaciones},
