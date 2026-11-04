@@ -83,7 +83,7 @@
                     <div class="col-9">
                         <select class="form-select" formControlName="tipoReclamo">
                             <option value="" selected disabled>Seleccione un tipo</option>
-                            @for (categoria of categorias; track categoria.idCategoria){
+                            @for (categoria of categorias(); track categoria.idCategoria){
                                 <option [value]="categoria.idCategoria">{{ categoria.nombre}}</option>
                             }
                         </select>

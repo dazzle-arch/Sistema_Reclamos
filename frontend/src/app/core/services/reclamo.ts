@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable} from 'rxjs';
-import { ReclamoResponse } from '../models/reclamoResponse.mode';
 import { ReclamoRequest } from '../models/reclamoRequest.model';
+import { ReclamoResponse } from '../models/reclamoResponse.mode';
 import { environment } from '../../../environments/environment.development';
 
 @Injectable({
