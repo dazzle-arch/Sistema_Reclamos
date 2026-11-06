@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable} from 'rxjs';
 import { ReclamoRequest } from '../models/reclamoRequest.model';
-import { ReclamoResponse } from '../models/reclamoResponse.mode';
+import { ReclamoResponse } from '../models/reclamoResponse.model';
 import { environment } from '../../../environments/environment.development';
 
 @Injectable({
