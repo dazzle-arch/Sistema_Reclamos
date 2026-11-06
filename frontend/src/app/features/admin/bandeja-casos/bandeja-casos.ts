@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { SidebarAdmin } from '../../../shared/components/sidebar-admin/sidebar-admin';  
 import { CampanaNotificaciones } from '../../../shared/components/campana-notificaciones/campana-notificaciones';
 import { ReclamoService } from '../../../core/services/reclamo';
-import { ReclamoResponse } from '../../../core/models/reclamoResponse.mode';
+import { ReclamoResponse } from '../../../core/models/reclamoResponse.model';
 
 @Component({
   imports: [SidebarAdmin, CampanaNotificaciones, RouterLink, DatePipe],
