@@ -14,6 +14,7 @@ import { DetalleReclamo } from './features/admin/detalle-reclamo/detalle-reclamo
 import { DerivarCaso } from './features/admin/derivar-caso/derivar-caso';
 import { FormularioUsuario } from './features/admin/formulario-usuario/formulario-usuario';
 import { Notificaciones } from './features/admin/notificaciones/notificaciones';
+import { Catalogos } from './features/admin/catalogos/catalogos';
 
 export const routes: Routes = [
     {path: '', component: Home},
@@ -32,5 +33,6 @@ export const routes: Routes = [
     {path: 'admin/derivar-caso', component: DerivarCaso},
     {path: 'admin/formulario-usuario', component: FormularioUsuario},
     {path: 'admin/notificaciones', component: Notificaciones},
+    {path: 'admin/catalogos', component: Catalogos},
 
 ];
