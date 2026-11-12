@@ -4,6 +4,7 @@ import { Observable} from 'rxjs';
 import { ReclamoRequest } from '../models/reclamoRequest.model';
 import { ReclamoResponse } from '../models/reclamoResponse.model';
 import { environment } from '../../../environments/environment.development';
+import { DerivarRequest } from '../models/derivarRequest.model';
 
 @Injectable({
     providedIn: 'root'
@@ -31,6 +32,10 @@ export class ReclamoService{
 
     actualizarEstado(id: number, estado: string): Observable<ReclamoResponse> {
         return this.http.patch<ReclamoResponse>(`${this.apiUrl}/${id}/estado`, null, { params: { estado } });
-}
+    }
+
+    derivar(id: number, body: DerivarRequest): Observable<ReclamoResponse> {
+        return this.http.patch<ReclamoResponse>(`${this.apiUrl}/${id}/derivar`, body);
+    }
 }
 

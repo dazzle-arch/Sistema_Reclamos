@@ -14,7 +14,8 @@ import { DetalleReclamo } from './features/admin/detalle-reclamo/detalle-reclamo
 import { DerivarCaso } from './features/admin/derivar-caso/derivar-caso';
 import { FormularioUsuario } from './features/admin/formulario-usuario/formulario-usuario';
 import { Notificaciones } from './features/admin/notificaciones/notificaciones';
-import { Catalogos } from './features/admin/catalogos/catalogos';
+import { Catalogos } from './features/admin/catalogos/catalogos'
+import { CasosAtendidos } from './features/funcionario/casos-atendidos/casos-atendidos';
 
 export const routes: Routes = [
     {path: '', component: Home},
@@ -30,9 +31,11 @@ export const routes: Routes = [
     {path: 'funcionario/bandeja-casos', component: BandejaCasosFuncionario},
     {path: 'funcionario/atender-caso/:id', component: AtenderCaso},
     {path: 'admin/detalle-reclamo/:id', component: DetalleReclamo},
-    {path: 'admin/derivar-caso', component: DerivarCaso},
+    {path: 'admin/derivar-caso/:id', component: DerivarCaso},
     {path: 'admin/formulario-usuario', component: FormularioUsuario},
-    {path: 'admin/notificaciones', component: Notificaciones},
+    {path: 'admin/formulario-usuario/:id', component: FormularioUsuario },
+    {path: 'notificaciones', component: Notificaciones},
     {path: 'admin/catalogos', component: Catalogos},
+    {path: 'funcionario/casos-atendidos', component: CasosAtendidos}
 
 ];

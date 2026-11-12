@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { Categoria } from '../models/categoria.model';
+import { CategoriaResponse } from '../models/categoriaResponse.model';
+import { CategoriaRequest } from '../models/categoriaRequest.model';
 
 @Injectable({
     providedIn: 'root'
@@ -12,19 +13,19 @@ export class CategoriaService {
 
     constructor(private http: HttpClient) {}
 
-    listar(): Observable<Categoria[]> {
-        return of([
-        { idCategoria: 1, nombre: 'Infraestructura' },
-        { idCategoria: 2, nombre: 'Limpieza' },
-        { idCategoria: 3, nombre: 'Seguridad' },
-        { idCategoria: 4, nombre: 'Transporte' },
-        { idCategoria: 5, nombre: 'Otro' },
-        ]);
-    // Cuando el backend esté listo:
-    // return this.http.get<Categoria[]>(this.apiUrl);
+    listar(): Observable<CategoriaResponse[]> {
+        return this.http.get<CategoriaResponse[]>(this.apiUrl);
     }
 
-    crear(categoria: Categoria): Observable<Categoria> {
-        return this.http.post<Categoria>(this.apiUrl, categoria);
+    crear(categoria: CategoriaRequest): Observable<CategoriaRequest> {
+        return this.http.post<CategoriaRequest>(this.apiUrl, categoria);
+    }
+
+    actualizar(id: number, categoria: CategoriaRequest): Observable<CategoriaResponse> {
+        return this.http.put<CategoriaResponse>(`${this.apiUrl}/${id}`, categoria);
+        }
+    
+    eliminar(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }

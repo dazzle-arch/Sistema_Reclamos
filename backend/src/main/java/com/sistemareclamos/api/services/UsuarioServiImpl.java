@@ -101,6 +101,15 @@ public class UsuarioServiImpl implements UsuarioService {
     }
 
     @Override
+    public List<UsuarioResponseDTO> listarActivosPorArea(Long idArea) {
+        if (!areaRepository.existsById(idArea)) {
+            throw new RecursoNoEncontradoException("Área no encontrada con id: " + idArea);
+        }
+        return repository.findByAreaIdAreaAndEstadoTrue(idArea)
+                .stream().map(this::toResponse).toList();
+    }
+
+    @Override
     @Transactional
     public void eliminar(Long id) {
         if (!repository.existsById(id)) {

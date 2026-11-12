@@ -1,73 +1,66 @@
 <main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <app-campana-notificaciones></app-campana-notificaciones>
+
     <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
 
         <app-sidebar-admin></app-sidebar-admin>
-        <app-campana-notificaciones></app-campana-notificaciones>
 
         <div class="content flex-grow-1 p-4">
 
             <div class="d-flex gap-3 mb-4">
                 <div class="input-group" style="max-width: 350px;">
-                    <input type="text" class="form-control" placeholder="Buscar un nombre">
+                    <input type="text" class="form-control" placeholder="Buscar un nombre"
+                        (input)="busqueda.set($any($event.target).value)">
                     <span class="input-group-text bg-white">
                         <i class="bi bi-search"></i>
                     </span>
                 </div>
 
-                <select class="form-select" style="max-width: 200px;">
-                    <option value="" selected disabled>Ordenar por</option>
-                    <option value="nombre">Nombre</option>
-                    <option value="cargo">Cargo</option>
+                <select class="form-select" style="max-width: 200px;"
+                        (change)="orden.set($any($event.target).value)">
+                    <option value="nombre" selected>Ordenar por nombre</option>
+                    <option value="cargo">Ordenar por rol</option>
                 </select>
 
                 <a routerLink="/admin/formulario-usuario" class="btn btn-danger fw-bold ms-auto">Nuevo usuario</a>
-            </div>  
-
-            <div class="row row-cols-4 g-3">
-                <div class="col">
-                    <div class="card h-100">
-                        <div class="bg-info-subtle" style="height: 120px;"></div>
-                        <div class="card-body text-center">
-                            <p class="fw-bold mb-0">Nombre usuario</p>
-                            <p class="text-muted small">(Cargo)</p>
-                            <button class="btn btn-primary w-100">Eliminar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="card h-100">
-                        <div class="bg-info-subtle" style="height: 120px;"></div>
-                        <div class="card-body text-center">
-                            <p class="fw-bold mb-0">Nombre usuario</p>
-                            <p class="text-muted small">(Cargo)</p>
-                            <button class="btn btn-primary w-100">Eliminar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="card h-100">
-                        <div class="bg-info-subtle" style="height: 120px;"></div>
-                        <div class="card-body text-center">
-                            <p class="fw-bold mb-0">Nombre usuario</p>
-                            <p class="text-muted small">(Cargo)</p>
-                            <button class="btn btn-primary w-100">Eliminar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
-                    <div class="card h-100">
-                        <div class="bg-info-subtle" style="height: 120px;"></div>
-                        <div class="card-body text-center">
-                            <p class="fw-bold mb-0">Nombre usuario</p>
-                            <p class="text-muted small">(Cargo)</p>
-                            <button class="btn btn-primary w-100">Eliminar</button>
-                        </div>
-                    </div>
-                </div>
             </div>
+
+            @if (cargando()) {
+                <p class="text-muted">Cargando usuarios...</p>
+            } @else if (error()) {
+                <p class="text-danger">No se pudieron cargar los usuarios.</p>
+            } @else {
+                <div class="row row-cols-4 g-3">
+                    @for (u of filtrados(); track u.idUsuario) {
+                        <div class="col">
+                            <div class="card h-100" [class.opacity-50]="!u.estado">
+                                <div class="bg-info-subtle d-flex align-items-center justify-content-center" style="height: 120px;">
+                                    <i class="bi bi-person-circle fs-1 text-secondary"></i>
+                                </div>
+                                <div class="card-body text-center">
+                                    <p class="fw-bold mb-0">{{ u.nombres }}</p>
+                                    <p class="text-muted small mb-2">{{ u.correo }}</p>
+                                    <span class="badge bg-danger me-1">{{ u.nombreRol }}</span>
+                                    <span class="badge bg-secondary">{{ u.nombreArea }}</span>
+
+                                    <div class="d-grid gap-2 mt-3">
+                                        <a [routerLink]="['/admin/formulario-usuario', u.idUsuario]"
+                                            class="btn btn-sm btn-outline-danger">Editar</a>
+                                        <button class="btn btn-sm"
+                                                [class.btn-danger]="u.estado"
+                                                [class.btn-success]="!u.estado"
+                                                (click)="cambiarEstado(u)">
+                                            {{ u.estado ? 'Desactivar' : 'Activar' }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    } @empty {
+                        <p class="text-muted">No se encontraron usuarios.</p>
+                    }
+                </div>
+            }
         </div>
     </div>
 </main>

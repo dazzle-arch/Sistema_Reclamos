@@ -1,5 +1,4 @@
-export interface Area {
-    idArea?: number;
+export interface AreaRequest {
     nombre: string,
     descripcion: string,
 }

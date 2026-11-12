@@ -4,6 +4,7 @@ import com.sistemareclamos.api.entities.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
@@ -15,4 +16,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     boolean existsByCorreoAndIdUsuarioNot(String correo, Long idUsuario);
     boolean existsByNombreUsuarioAndIdUsuarioNot(String nombreUsuario, Long idUsuario);
+
+    List<Usuario> findByAreaIdAreaAndEstadoTrue(Long idArea);
 }

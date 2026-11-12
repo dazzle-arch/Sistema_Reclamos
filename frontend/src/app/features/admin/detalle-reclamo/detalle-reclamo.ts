@@ -34,6 +34,7 @@ export class DetalleReclamo implements OnInit {
 
     this.reclamoService.buscarPorId(id).subscribe({
       next: (r) => {
+        this.reclamo.set(r);
         this.ciudadanoService.buscarPorId(r.idCiudadano).subscribe({
           next: (c) => this.ciudadano.set(c)
         });

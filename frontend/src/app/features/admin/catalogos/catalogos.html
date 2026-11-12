@@ -1,103 +1,179 @@
-<main  class="panel container d-flex justify-content-center align-items-center py-5">
+<main class="panel container d-flex justify-content-center align-items-center py-5">
     <app-campana-notificaciones></app-campana-notificaciones>
-    
+
     <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
-        
+
         <app-sidebar-admin></app-sidebar-admin>
 
         <div class="content flex-grow-1 p-4">
-            <div class="row g-4"></div>
+            <div class="row g-4">
 
-            <div class="col-6">
-                <h5 class="border text-danger mb-3">Categorias</h5>
-                
-                <div class="border rounded p-3 mb-3">
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Nombre</label>
-                        <input type="text" class="form-control">
+                <!-- ============ ROLES ============ -->
+                <div class="col-6">
+                    <h5 class="fw-bold text-danger mb-3">Roles</h5>
+
+                    <div class="border rounded p-3 mb-3">
+                        <div class="mb-2">
+                            <label class="form-label fw-bold">Nombre</label>
+                            <input type="text" class="form-control" name="rolNombre"
+                                    [(ngModel)]="rolForm.nombre">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label fw-bold">Descripción</label>
+                            <input type="text" class="form-control" name="rolDescripcion"
+                                    [(ngModel)]="rolForm.descripcion">
+                        </div>
+
+                        <div class="text-end">
+                            @if (rolEditandoId !== null) {
+                                <button class="btn btn-outline-secondary me-2"
+                                        (click)="cancelarRol()">Cancelar</button>
+                            }
+                            <button class="btn btn-danger fw-bold px-4" (click)="guardarRol()">
+                                {{ rolEditandoId !== null ? 'Actualizar rol' : 'Guardar rol' }}
+                            </button>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Descripcion</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="text-end">
-                        <button class="btn btn-danger fw-bold px-4">Guardar categoria</button>
-                    </div>
+
+                    <table class="table table-bordered text-center table-hover align-middle">
+                        <thead>
+                            <tr class="table-danger">
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (rol of roles(); track rol.idRol) {
+                                <tr>
+                                    <td>{{ rol.nombre }}</td>
+                                    <td>{{ rol.descripcion }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger me-1"
+                                                (click)="editarRol(rol)">Editar</button>
+                                        <button class="btn btn-sm btn-danger"
+                                                (click)="eliminarRol(rol.idRol)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            } @empty {
+                                <tr>
+                                    <td colspan="4" class="text-muted">Sin roles registrados</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
 
-                <table class="table table-bordered text-center table-hover align-middle">
-                    <thead>
-                        <tr class="table-danger">
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger me-1">Editar</button>
-                                <button class="btn btn-sm btn-danger">Eliminar</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger me-1">Editar</button>
-                                <button class="btn btn-sm btn-danger">Eliminar</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="col-6">
-                <h5 class="fw-bold text-danger mb-3">Áreas</h5>
+                <!-- ============ ÁREAS ============ -->
+                <div class="col-6">
+                    <h5 class="fw-bold text-danger mb-3">Áreas</h5>
 
-                <div class="border rounded p-3 mb-3">
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Nombre</label>
-                        <input type="text" class="form-control">
+                    <div class="border rounded p-3 mb-3">
+                        <div class="mb-2">
+                            <label class="form-label fw-bold">Nombre</label>
+                            <input type="text" class="form-control" name="areaNombre"
+                                    [(ngModel)]="areaForm.nombre">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Descripción</label>
+                            <input type="text" class="form-control" name="areaDescripcion"
+                                    [(ngModel)]="areaForm.descripcion">
+                        </div>
+                        <div class="text-end">
+                            @if (areaEditandoId !== null) {
+                                <button class="btn btn-outline-secondary me-2"
+                                        (click)="cancelarArea()">Cancelar</button>
+                            }
+                            <button class="btn btn-danger fw-bold px-4" (click)="guardarArea()">
+                                {{ areaEditandoId !== null ? 'Actualizar área' : 'Guardar área' }}
+                            </button>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Descripción</label>
-                        <input type="text" class="form-control">
-                    </div>
-                    <div class="text-end">
-                        <button class="btn btn-danger fw-bold px-4">Guardar área</button>
-                    </div>
+
+                    <table class="table table-bordered text-center table-hover align-middle">
+                        <thead>
+                            <tr class="table-danger">
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (area of areas(); track area.idArea) {
+                                <tr>
+                                    <td>{{ area.nombre }}</td>
+                                    <td>{{ area.descripcion }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger me-1"
+                                                (click)="editarArea(area)">Editar</button>
+                                        <button class="btn btn-sm btn-danger"
+                                                (click)="eliminarArea(area.idArea)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            } @empty {
+                                <tr>
+                                    <td colspan="3" class="text-muted">Sin áreas registradas</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
 
-                <table class="table table-bordered text-center table-hover align-middle">
-                    <thead>
-                        <tr class="table-danger">
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger me-1">Editar</button>
-                                <button class="btn btn-sm btn-danger">Eliminar</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger me-1">Editar</button>
-                                <button class="btn btn-sm btn-danger">Eliminar</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- ============ CATEGORÍAS DE RECLAMO ============ -->
+                <div class="col-6">
+                    <h5 class="fw-bold text-danger mb-3">Categorías de reclamo</h5>
+
+                    <div class="border rounded p-3 mb-3">
+                        <div class="mb-2">
+                            <label class="form-label fw-bold">Nombre</label>
+                            <input type="text" class="form-control" name="categoriaNombre"
+                                    [(ngModel)]="categoriaForm.nombre">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Descripción</label>
+                            <input type="text" class="form-control" name="categoriaDescripcion"
+                                    [(ngModel)]="categoriaForm.descripcion">
+                        </div>
+                        <div class="text-end">
+                            @if (categoriaEditandoId !== null) {
+                                <button class="btn btn-outline-secondary me-2"
+                                        (click)="cancelarCategoria()">Cancelar</button>
+                            }
+                            <button class="btn btn-danger fw-bold px-4" (click)="guardarCategoria()">
+                                {{ categoriaEditandoId !== null ? 'Actualizar categoría' : 'Guardar categoría' }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered text-center table-hover align-middle">
+                        <thead>
+                            <tr class="table-danger">
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (categoria of categorias(); track categoria.idCategoria) {
+                                <tr>
+                                    <td>{{ categoria.nombre }}</td>
+                                    <td>{{ categoria.descripcion }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger me-1"
+                                                (click)="editarCategoria(categoria)">Editar</button>
+                                        <button class="btn btn-sm btn-danger"
+                                                (click)="eliminarCategoria(categoria.idCategoria)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            } @empty {
+                                <tr>
+                                    <td colspan="3" class="text-muted">Sin categorías registradas</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     </div>

@@ -70,9 +70,11 @@
           </tbody>
         </table>
 
+        @if (r.estado !== 'CERRADO') {
         <div class="text-end">
-          <a routerLink="/admin/derivar-caso" class="btn btn-danger fw-bold px-4">Derivar caso</a>
+          <a [routerLink]="['/admin/derivar-caso', r.idReclamo]" class="btn btn-danger fw-bold px-4">Derivar caso</a>
         </div>
+}
 
       } @else {
         <p class="text-muted">Cargando reclamo...</p>

@@ -23,7 +23,7 @@ export class BandejaCasos implements OnInit {
     this.reclamoService.listar().subscribe({
       next: (data) => {
         this.reclamos.set(data);
-        this.cargando.set(true);
+        this.cargando.set(false);
       },
       error: () => {
         this.error.set(true);

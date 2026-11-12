@@ -5,6 +5,10 @@ export interface ReclamoResponse {
     dniCiudadano: string;
     idCategoria: number;
     nombreCategoria: string;
+    idArea: number | null;
+    nombreArea: string | null;
+    idUsuarioAsignado: number | null;
+    nombreUsuarioAsignado: string | null;
     asunto: string;
     descripcion: string;
     estado: string;
