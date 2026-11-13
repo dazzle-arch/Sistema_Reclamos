@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { Rol } from '../models/rol.model';
+import { RolResponse } from '../models/rolResponse.model';
+import { RolRequest } from '../models/rolRequest.model';
 
 @Injectable({
     providedIn: 'root'
@@ -12,11 +13,19 @@ export class RolService {
 
     constructor(private http: HttpClient) {}
 
-    listar(): Observable<Rol[]> {
-        return this.http.get<Rol[]>(this.apiUrl);
+    listar(): Observable<RolResponse[]> {
+        return this.http.get<RolResponse[]>(this.apiUrl);
     }
 
-    crear(rol: Rol): Observable<Rol> {
-        return this.http.post<Rol>(this.apiUrl, rol);
+    crear(rol: RolRequest): Observable<RolResponse> {
+        return this.http.post<RolResponse>(this.apiUrl, rol);
+    }
+
+    actualizar(id: number, rol: RolRequest): Observable<RolResponse> {
+        return this.http.put<RolResponse>(`${this.apiUrl}/${id}`, rol);
+    }
+
+    eliminar(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }

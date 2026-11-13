@@ -53,4 +53,9 @@ public class UsuarioController {
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
     }
+
+    @GetMapping("/area/{idArea}")
+    public List<UsuarioResponseDTO> listarActivosPorArea(@PathVariable Long idArea) {
+        return service.listarActivosPorArea(idArea);
+    }
 }

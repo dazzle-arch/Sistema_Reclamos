@@ -1,14 +1,14 @@
 <main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <app-campana-notificaciones></app-campana-notificaciones>
     <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
         <app-sidebar-admin></app-sidebar-admin>
-        <app-campana-notificaciones></app-campana-notificaciones>
 
         <div class="content flex-grow-1 p-4">
             <div class="d-flex align-items-center gap-3 mb-4">
                 <div class="progress flex-grow-1" style="height: 12px; max-width: 400px;">
-                    <div class="progress-bar bg-primary" role="progressbar" [style.width.%]="porcentajeCerrados"></div>
+                    <div class="progress-bar bg-primary" role="progressbar" [style.width.%]="porcentajeCerrados()"></div>
                 </div>
-                <span class="fs-2 fw-bold">{{ porcentajeCerrados }}</span>
+                <span class="fs-2 fw-bold">{{ porcentajeCerrados() }}%</span>
                 <span class="text-muted small">de reclamos cerrados</span>
             </div>
 
@@ -16,14 +16,14 @@
                 <p class="text-muted">Cargando reclamos...</p>
             } @else if (error()) {
                 <p class="text-danger">No se pudieron cargar los reclamos</p>
-            }
+            } @else {
             <table class="table table-bordered text-center table-hover align-middle">
                 <thead>
                     <tr class="table-danger">
                         <th>N° id</th>
                         <th>Fecha</th>
                         <th>Nombre</th>
-                        <th>Departamento</th>
+                        <th>Categoria</th>
                         <th>Estado</th>
                         <th>Accion</th>
                     </tr>
@@ -49,6 +49,7 @@
                     }
                 </tbody>
             </table>
+            }
         </div>
     </div>
 </main>

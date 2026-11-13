@@ -40,4 +40,12 @@ public class Reclamo {
     @JoinColumn(name = "id_categoria", nullable = false)
     private Categoria categoria;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_area")
+    private Area area;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario_asignado")
+    private Usuario usuarioAsignado;
+
 }

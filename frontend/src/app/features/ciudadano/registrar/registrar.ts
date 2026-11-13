@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoriaService } from '../../../core/services/categoria';
 import { ReclamoService } from '../../../core/services/reclamo';
-import { Categoria } from '../../../core/models/categoria.model';
+import { CategoriaResponse } from '../../../core/models/categoriaResponse.model';
 import { ReclamoRequest } from '../../../core/models/reclamoRequest.model';
 
 @Component({
@@ -13,7 +13,7 @@ import { ReclamoRequest } from '../../../core/models/reclamoRequest.model';
 })
 export class Registrar implements OnInit{
   formularioReclamo: FormGroup;
-  categorias = signal<Categoria[]>([]);
+  categorias = signal<CategoriaResponse[]>([]);
   enviando = false;
 
   constructor(

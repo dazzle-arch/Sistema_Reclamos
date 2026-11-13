@@ -1,41 +1,132 @@
 <main class="panel-container d-flex justify-content-center align-items-center py-5">
-    <div class="card shadow-sm p-4" style="width: 700px;">
-        <h2 class="text-danger fw-bold mb-4">Atender caso N° {{idCaso}}</h2>
+    <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
 
-        <div class="mb-3">
-            <label class="form-labelfw-bold">Estado Actual</label>
-            <select class="form-select">
-                <option value="registrado">Registrado</option>
-                <option value="derviado" selected>Derivado</option>
-                <option value="atentido">Atendido</option>
-                <option value="cerrado">Cerrado</option>
-            </select>
-        </div>
+        <app-sidebar-funcionario></app-sidebar-funcionario>
+        <app-campana-notificaciones></app-campana-notificaciones>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Derivar a otro departamento</label>
-            <select class="form-select">
-                <option value="" selected disabled>Seleccione (opcional)</option>
-                <option value="derviado" selected>Obras Publicas</option>
-                <option value="atentido">Limpieza Publica</option>
-                <option value="seguridad">Seguridad Ciudadana</option>
-                <option value="transporte">Transporte</option>
-            </select>
-        </div>
+        <div class="content flex-grow-1 p-4">
 
-        <div class="mb-4">
-            <label class="form-label fw-bold">Respuesta / Observaciones</label>
-            <textarea class="form-control" row="4"></textarea>
-        </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0">Atender caso N° {{ idCaso }}</h4>
+                <a routerLink="/funcionario/bandeja-casos" class="btn btn-outline-danger btn-sm">Volver a la bandeja</a>
+            </div>
 
-        <div class="mb-4">
-            <label class="form-label fw-bold">Adjuntar documento de respuesta</label>
-            <input type="file" class="form-control">
-        </div>
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <div class="border rounded p-3 h-100">
+                        <h6 class="fw-bold text-danger">Datos del ciudadano</h6>
+                        <p class="mb-1"><span class="fw-bold">Nombre:</span></p>
+                        <p class="mb-1"><span class="fw-bold">DNI:</span></p>
+                        <p class="mb-1"><span class="fw-bold">Teléfono:</span></p>
+                        <p class="mb-0"><span class="fw-bold">Correo:</span></p>
+                    </div>
+                </div>
 
-        <div class="d-flex justify-content-between">
-            <a routerLink="/funcionario/bandeja-casos" class="btn btn-outline-secondary">Cancelar</a>
-            <button class="btn btn-danger fw-bold px-4">Guardar cambios</button>
+                <div class="col-6">
+                    <div class="border rounded p-3 h-100">
+                        <h6 class="fw-bold text-danger">Datos del reclamo</h6>
+                        <p class="mb-1"><span class="fw-bold">Categoría:</span></p>
+                        <p class="mb-1"><span class="fw-bold">Fecha:</span></p>
+                        <p class="mb-1"><span class="fw-bold">Prioridad:</span></p>
+                        <p class="mb-0"><span class="fw-bold">Estado actual:</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border rounded p-3 mb-4">
+                <h6 class="fw-bold text-danger">Asunto</h6>
+                <p class="mb-0">Descripción</p>
+            </div>
+
+            <div class="border rounded p-3 mb-4">
+                <h6 class="fw-bold text-danger">Evidencia adjunta</h6>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted">Sin evidencia adjunta</span>
+                    <a href="#" class="btn btn-sm btn-outline-danger">Descargar</a>
+                </div>
+            </div>
+
+            <h6 class="fw-bold">Historial de trazabilidad</h6>
+            <table class="table-trazabilidad text-center align-middle mb-4">
+                <thead>
+                    <tr>
+                        <th>Fecha y hora</th>
+                        <th>Acción realizada</th>
+                        <th>Responsable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h6 class="fw-bold text-danger">Registrar atención</h6>
+            <div class="border rounded p-3">
+
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">NUEVO ESTADO</label>
+                    <div class="col-9">
+                        <select class="form-select">
+                        <option value="" selected disabled>Seleccione un estado</option>
+                        <option value="EN_PROCESO">En proceso</option>
+                        <option value="RESUELTO">Resuelto</option>
+                        <option value="CERRADO">Cerrado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">ACCIÓN REALIZADA</label>
+                    <div class="col-9">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-3 text-end fw-bold">OBSERVACIÓN</label>
+                    <div class="col-9">
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-3 text-end fw-bold">RESPUESTA AL CIUDADANO</label>
+                    <div class="col-9">
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="row mb-3 align-items-center">
+                    <label class="col-3 text-end fw-bold">DOCUMENTO DE RESPUESTA</label>
+                    <div class="col-9">
+                        <input type="file" class="form-control">
+                        <div class="form-text">Opcional</div>
+                    </div>
+                </div>
+
+                <div class="row mb-4 align-items-center">
+                    <label class="col-3 text-end fw-bold">DERIVAR A OTRA ÁREA</label>
+                    <div class="col-9">
+                        <select class="form-select">
+                        <option value="" selected>No derivar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a routerLink="/funcionario/bandeja-casos" class="btn btn-outline-secondary">Cancelar</a>
+                    <button class="btn btn-danger fw-bold px-4">Guardar atención</button>
+                </div>
+            </div>
         </div>
-    </div> 
+    </div>
 </main>

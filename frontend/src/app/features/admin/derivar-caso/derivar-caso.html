@@ -1,29 +1,38 @@
 <main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <app-campana-notificaciones></app-campana-notificaciones>
     <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
 
     <app-sidebar-admin></app-sidebar-admin>
-    <app-campana-notificaciones></app-campana-notificaciones>
 
     <div class="content flex-grow-1 p-4">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="fw-bold m-0">Derivar caso</h4>
-            <a routerLink="/admin/detalle-reclamo" class="btn btn-outline-danger btn-sm">Volver al detalle</a>
+            <a [routerLink]="['/admin/detalle-reclamo', idReclamo]" class="btn btn-outline-danger btn-sm">Volver al detalle</a>
         </div>
 
+        @if (error()) {
+            <div class="alert alert-danger">{{ error() }}</div>
+        }
+
+        @if (reclamo(); as r) {
         <div class="border rounded p-3 mb-4">
             <h6 class="fw-bold text-danger">Resumen del reclamo</h6>
-            <p class="mb-1"><span class="fw-bold">N°:</span></p>
-            <p class="mb-1"><span class="fw-bold">Asunto:</span></p>
-            <p class="mb-1"><span class="fw-bold">Área actual:</span></p>
-            <p class="mb-0"><span class="fw-bold">Estado:</span></p>
+            <p class="mb-1"><span class="fw-bold">N°:</span> {{ r.idReclamo }}</p>
+            <p class="mb-1"><span class="fw-bold">Asunto:</span> {{ r.asunto }}</p>
+            <p class="mb-1"><span class="fw-bold">Área actual:</span> {{ r.nombreArea ?? 'Sin asignar' }}</p>
+            <p class="mb-0"><span class="fw-bold">Estado:</span> {{ r.estado }}</p>
         </div>
+        }
 
         <div class="row mb-3 align-items-center">
             <label class="col-3 text-end fw-bold">ÁREA DESTINO</label>
             <div class="col-9">
-            <select class="form-select">
-                <option value="" selected disabled>Seleccione un área</option>
+            <select class="form-select" name="area" [(ngModel)]="idAreaSeleccionada" (ngModelChange)="alCambiarArea()">
+                <option [ngValue]="null" disabled>Seleccione un área</option>
+                @for (a of areas(); track a.idArea) {
+                    <option [ngValue]="a.idArea">{{ a.nombre }}</option>
+                }
             </select>
             </div>
         </div>
@@ -31,8 +40,12 @@
         <div class="row mb-3 align-items-center">
             <label class="col-3 text-end fw-bold">FUNCIONARIO</label>
             <div class="col-9">
-            <select class="form-select">
-                <option value="" selected disabled>Seleccione un funcionario</option>
+            <select class="form-select" name="funcionario" [(ngModel)]="idFuncionarioSeleccionado"
+                    [disabled]="funcionarios().length === 0">
+                <option [ngValue]="null" disabled>Seleccione un funcionario</option>
+                @for (f of funcionarios(); track f.idUsuario) {
+                    <option [ngValue]="f.idUsuario">{{ f.nombres }}</option>
+                }
             </select>
             </div>
         </div>
@@ -40,13 +53,15 @@
         <div class="row mb-4">
             <label class="col-3 text-end fw-bold">OBSERVACIÓN</label>
             <div class="col-9">
-            <textarea class="form-control" rows="4"></textarea>
+            <textarea class="form-control" rows="4" maxlength="500" name="observacion" [(ngModel)]="observacion"></textarea>
             </div>
         </div>
 
         <div class="d-flex justify-content-end gap-2">
-            <a routerLink="/admin/detalle-reclamo" class="btn btn-outline-secondary">Cancelar</a>
-            <button class="btn btn-danger fw-bold px-4">Confirmar derivación</button>
+            <a [routerLink]="['/admin/detalle-reclamo', idReclamo]" class="btn btn-outline-secondary">Cancelar</a>
+            <button class="btn btn-danger fw-bold px-4" (click)="confirmar()" [disabled]="enviando()">
+                Confirmar derivación
+            </button>
         </div>
     </div>
 </div>

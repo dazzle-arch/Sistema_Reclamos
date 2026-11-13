@@ -12,4 +12,5 @@ public interface UsuarioService {
     UsuarioResponseDTO actualizar(Long id, UsuarioRequestDTO dto);
     UsuarioResponseDTO cambiarEstado(Long id, boolean estado);
     void eliminar(Long id);
+    List<UsuarioResponseDTO> listarActivosPorArea(Long idArea);
 }

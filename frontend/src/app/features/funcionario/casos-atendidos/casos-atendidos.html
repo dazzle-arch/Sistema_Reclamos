@@ -1,0 +1,73 @@
+<main class="panel-container d-flex justify-content-center align-items-center py-5">
+    <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
+
+        <app-sidebar-funcionario></app-sidebar-funcionario>
+        <app-campana-notificaciones></app-campana-notificaciones>
+
+        <div class="content flex-grow-1 p-4">
+
+            <h4 class="fw-bold mb-4">Casos atendidos</h4>
+
+            <div class="d-flex gap-3 mb-4">
+                <div class="input-group" style="max-width: 350px;">
+                    <input type="text" class="form-control" placeholder="Buscar por ciudadano o código">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                </div>
+
+                <select class="form-select" style="max-width: 200px;">
+                    <option value="" selected>Todos los estados</option>
+                    <option value="RESUELTO">Resuelto</option>
+                    <option value="CERRADO">Cerrado</option>
+                </select>
+
+                <div class="d-flex align-items-center gap-2 ms-auto">
+                    <label class="fw-bold small mb-0">Desde</label>
+                    <input type="date" class="form-control" style="max-width: 170px;">
+                    <label class="fw-bold small mb-0">Hasta</label>
+                    <input type="date" class="form-control" style="max-width: 170px;">
+                </div>
+            </div>
+
+            <table class="table table-bordered text-center table-hover align-middle">
+                <thead>
+                    <tr class="table-danger">
+                        <th>N° Ticket</th>
+                        <th>Fecha de atención</th>
+                        <th>Ciudadano</th>
+                        <th>Categoría</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td><button class="btn btn-sm btn-danger">Ver</button></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td><button class="btn btn-sm btn-danger">Ver</button></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td><button class="btn btn-sm btn-danger">Ver</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>

@@ -16,4 +16,6 @@ public interface ReclamoRepository extends JpaRepository<Reclamo, Long> {
 
     // Si quieres buscar por código de trámite + DNI juntos (consultar-estado)
     Optional<Reclamo> findByIdReclamoAndCiudadanoDni(Long idReclamo, String dni);
+
+    List<Reclamo> findByUsuarioAsignadoIdUsuario(Long idUsuario);
 }

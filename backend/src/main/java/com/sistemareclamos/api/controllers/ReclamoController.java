@@ -1,4 +1,5 @@
  package com.sistemareclamos.api.controllers;
+import com.sistemareclamos.api.dtos.DerivarRequestDTO;
 import com.sistemareclamos.api.dtos.ReclamoRequestDTO;
 import com.sistemareclamos.api.dtos.ReclamoResponseDTO;
 import com.sistemareclamos.api.services.ReclamoService;
@@ -37,5 +38,15 @@ public class ReclamoController {
     @PatchMapping("/{id}/estado")
     public ReclamoResponseDTO actualizarEstado(@PathVariable Long id, @RequestParam String estado) {
         return service.actualizarEstado(id, estado);
+    }
+
+    @PatchMapping("/{id}/derivar")
+    public ReclamoResponseDTO derivar(@PathVariable Long id, @Valid @RequestBody DerivarRequestDTO dto) {
+        return service.derivar(id, dto);
+    }
+
+    @GetMapping("/funcionario/{idUsuario}")
+    public List<ReclamoResponseDTO> listarPorFuncionario(@PathVariable Long idUsuario) {
+        return service.listarPorFuncionario(idUsuario);
     }
 }
