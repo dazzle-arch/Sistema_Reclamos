@@ -1,6 +1,7 @@
-<main class="panel-container d-flex justify-content-center align-items-center py-5">
-    <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
-        
+<main class="panel-container d-flex justify-content-center align-items-center py-4">
+    <!-- Reducción del 10% en el width y min-height -->
+    <div class="card shadow-sm d-flex flex-row" style="width: 1350px; max-width: 100%; min-height: 720px;">
+
         <app-sidebar-funcionario></app-sidebar-funcionario>
         <app-campana-notificaciones></app-campana-notificaciones>
 
@@ -19,26 +20,36 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Inicia el bucle dinámico -->
+                    @for (reclamo of reclamosAsignados; track reclamo.idReclamo) {
                     <tr>
-                        <td>0001</td>
-                        <td>20/09/2026</td>
-                        <td>Juan Pérez</td>
-                        <td>Infraestructura</td>
-                        <td><span class="badge bg-warning text-dark">Derivado</span></td>
+                        <!-- Imprimimos los datos de cada reclamo usando las llaves dobles {{ }} -->
+                        <td>{{ reclamo.idReclamo }}</td>
+
+                        <!-- Usamos el 'pipe' de Angular para formatear la fecha visualmente -->
+                        <td>{{ reclamo.fechaRegistro | date:'dd/MM/yyyy' }}</td>
+
+                        <td>{{ reclamo.nombreCiudadano }}</td>
+                        <td>{{ reclamo.nombreCategoria }}</td>
+
                         <td>
-                            <a routerLink="/funcionario/atender-caso/0001" class="btn btn-sm btn-danger">Atender</a>
+                            <!-- Mostramos el estado real del reclamo -->
+                            <span class="badge bg-warning text-dark">{{ reclamo.estado }}</span>
+                        </td>
+
+                        <td>
+                            <!-- El botón ahora genera la ruta dinámica: /funcionario/atender-caso/5 -->
+                            <a [routerLink]="['/funcionario/atender-caso', reclamo.idReclamo]" class="btn btn-sm btn-danger">Atender</a>
                         </td>
                     </tr>
+                    } @empty {
+                    <!-- Este bloque se activa automáticamente si no hay reclamos asignados -->
                     <tr>
-                        <td>0002</td>
-                        <td>21/09/2026</td>
-                        <td>María López</td>
-                        <td>Limpieza</td>
-                        <td><span class="badge bg-secondary">Registrado</span></td>
-                        <td>
-                            <a routerLink="/funcionario/atender-caso/0002" class="btn btn-sm btn-danger">Atender</a>
+                        <td colspan="6" class="text-center py-4 text-muted fw-bold">
+                            No tienes casos asignados actualmente.
                         </td>
                     </tr>
+                    }
                 </tbody>
             </table>
         </div>

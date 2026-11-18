@@ -47,7 +47,7 @@ export class DerivarCaso implements OnInit {
       error: () => this.error.set('No se pudo cargar el reclamo')
     });
 
-    this.areaService.listar().subscribe({
+    this.areaService.listarAreas().subscribe({
       next: (a) => this.areas.set(a),
       error: () => this.error.set('No se pudieron cargar las áreas')
     });

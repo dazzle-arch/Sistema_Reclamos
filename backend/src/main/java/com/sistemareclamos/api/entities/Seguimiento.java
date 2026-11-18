@@ -31,6 +31,9 @@ public class Seguimiento {
     @Column(name = "accion_realizada", length = 350)
     private String accionRealizada;
 
+    @Column(name = "documento_url", length = 500)
+    private String documentoUrl;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_reclamo", nullable = false)
     private Reclamo reclamo;

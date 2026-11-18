@@ -1,26 +1,44 @@
 <main class="login-container d-flex justify-content-center align-items-center">
     <div class="card shadow-sm" style="width: 400px;">
         <div class="card-header bg-white text-center py-3">
-            <h2 class="text-danger fw-bold m-0">Inicion de sesión</h2>
+            <h2 class="text-danger fw-bold m-0">Inicio de sesión</h2>
         </div>
+        
         <div class="card-body">
             <p class="text-center text-muted mb-4">Solo personal autorizado</p>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Usuario</label>
-                <input type="text" class="form-control">
-            </div>
+            <!-- El formulario envuelve los inputs y botones -->
+            <form [formGroup]="loginForm" (ngSubmit)="ingresar()">
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Usuario</label>
+                    <input type="text" class="form-control" formControlName="nombreUsuario"
+                           [class.is-invalid]="loginForm.get('nombreUsuario')?.touched && loginForm.get('nombreUsuario')?.invalid">
+                </div>
 
-            <div class="mb-4">
-                <label class="form-label fw-bold">Contraseña</label>
-                <input type="password" class="form-control">
-            </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Contraseña</label>
+                    <input type="password" class="form-control" formControlName="contrasena"
+                           [class.is-invalid]="loginForm.get('contrasena')?.touched && loginForm.get('contrasena')?.invalid">
+                </div>
 
-            <div class="d-flex flex-column align-items-center gap-2">
-                <button class="button btn-danger w-100 py-2 fw-bold" (click)="ingresar()">Iniciar sesion</button>
-                <a href="#" class="text-muted small">Olvide mi contraseña</a> 
-                <a class="text-muted small" routerLink="/home">Volver a Inicio</a>
-            </div>
+                <!-- Mensaje de error dinámico -->
+                @if(errorMensaje) {
+                    <div class="alert alert-danger p-2 text-center small mb-3">
+                        {{ errorMensaje }}
+                    </div>
+                }
+
+                <div class="d-flex flex-column align-items-center gap-2">
+                    <!-- Botón tipo submit enlazado a la variable de carga -->
+                    <button type="submit" class="btn btn-danger w-100 py-2 fw-bold" [disabled]="cargando">
+                        {{ cargando ? 'Verificando...' : 'Iniciar sesion' }}
+                    </button>
+                    <a href="#" class="text-muted small">Olvide mi contraseña</a> 
+                    <a class="text-muted small" routerLink="/home">Volver a Inicio</a>
+                </div>
+                
+            </form>
         </div>
     </div>
 </main>

@@ -14,7 +14,7 @@ export class AreaService {
 
     constructor(private http: HttpClient) {}
 
-    listar(): Observable<AreaResponse[]> {
+    listarAreas(): Observable<AreaResponse[]> {
         return this.http.get<AreaResponse[]>(this.apiUrl);
     }
 

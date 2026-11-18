@@ -4,7 +4,7 @@ import { SidebarAdmin } from '../../../shared/components/sidebar-admin/sidebar-a
 import { CampanaNotificaciones } from '../../../shared/components/campana-notificaciones/campana-notificaciones';
 
 @Component({
-  imports: [SidebarAdmin, CampanaNotificaciones, RouterLink],
+  imports: [SidebarAdmin, CampanaNotificaciones],
   selector: 'app-notificaciones',
   styleUrl: './notificaciones.css',
   templateUrl: './notificaciones.html',

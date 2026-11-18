@@ -1,6 +1,8 @@
 package com.sistemareclamos.api.dtos;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat; // Añadir esta importación
 
 public record ReclamoResponseDTO (
         Long idReclamo,
@@ -17,5 +19,10 @@ public record ReclamoResponseDTO (
         String descripcion,
         String estado,
         String prioridad,
-        LocalDateTime fechaRegistro
+        
+        // Añadir esta línea exacta sobre tu fecha:
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        LocalDateTime fechaRegistro,
+
+        List<SeguimientoResponseDTO> historial
 ) {}
