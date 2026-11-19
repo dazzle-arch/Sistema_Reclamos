@@ -1,6 +1,7 @@
 package com.sistemareclamos.api.services;
 import com.sistemareclamos.api.dtos.ReclamoRequestDTO;
 import com.sistemareclamos.api.dtos.ReclamoResponseDTO;
+import com.sistemareclamos.api.dtos.AtencionRequestDTO;
 import com.sistemareclamos.api.dtos.DerivarRequestDTO;
 import java.util.List;
 public interface ReclamoService {
@@ -10,4 +11,6 @@ public interface ReclamoService {
     ReclamoResponseDTO actualizarEstado(Long id, String nuevoEstado);
     ReclamoResponseDTO derivar(Long id, DerivarRequestDTO dto);
     List<ReclamoResponseDTO> listarPorFuncionario(Long idUsuario);
+    ReclamoResponseDTO registrarAtencion(Long idReclamo, AtencionRequestDTO dto, String nombreUsuarioFuncionario);
+    List<ReclamoResponseDTO> listarMisCasos(String nombreUsuario);
 }

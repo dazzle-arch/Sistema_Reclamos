@@ -93,7 +93,7 @@ export class Catalogos implements OnInit {
 
   // ================= ÁREAS =================
   cargarAreas(): void {
-    this.areaService.listar().subscribe({
+    this.areaService.listarAreas().subscribe({
       next: data => this.areas.set(data),
       error: err => console.error('Error al listar áreas', err)
     });

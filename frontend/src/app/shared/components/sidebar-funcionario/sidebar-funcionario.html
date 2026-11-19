@@ -1,25 +1,54 @@
-<div class="sidebar bg-light p-4" style="width: 250px;">
-    <h3 class="text-danger fw-bold mb-4 rounded p-2 text-center">
-        Panel de funcionario
-    </h3>
-    <ul class="nav flex-column gap-3">
-        <li class="nav flex-column gap-3">
-            <a routerLink="funcionario/bandeja-casos" routerLinkActive="active-link"
-                class="fw-bold fs-5 text-center d-block text-dark text-decoration-none">
-                Bandeja de reclamos
-            </a> 
-        </li>
-        <li class="nav flex-column gap-3">
-            <a routerLink="/home" routerLinkActive="active-link"
-                class="fw-bold fs-5 text-center d-block text-dark text-decoration-none">
-                Volver a Inicio
-            </a> 
-        </li>
-        <li class="nav-item">
-            <a routerLink="/funcionario/casos-atendidos" routerLinkActive="active-link"
-                class="fw-bold fs-5 text-center d-block text-dark text-decoration-none">
-                Casos atendidos
-            </a>
-        </li>
-    </ul>
+<div class="sidebar bg-light p-3 d-flex flex-column" style="width: 225px; min-height: 100vh;">
+
+    <!-- BLOQUE SUPERIOR: Título y Navegación -->
+    <div>
+        <h4 class="text-danger fw-bold mb-4 text-center border-bottom pb-2">
+            Panel de funcionario
+        </h4>
+
+        <ul class="nav flex-column gap-2">
+            <li class="nav-item">
+                <a routerLink="/funcionario/bandeja-casos" routerLinkActive="bg-dark text-white rounded"
+                    class="fw-bold text-center d-block text-dark text-decoration-none p-2 transition-colors">
+                    Bandeja de reclamos
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a routerLink="/funcionario/casos-atendidos" routerLinkActive="bg-dark text-white rounded"
+                    class="fw-bold text-center d-block text-dark text-decoration-none p-2 transition-colors">
+                    Casos atendidos
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- BLOQUE INFERIOR: Pegado al suelo -->
+    <div class="mt-auto">
+        <hr class="mb-3 text-secondary">
+
+        <!-- Información del Usuario -->
+        <div class="d-flex align-items-center gap-2 mb-3 px-2">
+
+            <!-- Círculo de Imagen de Perfil (Reducido a 40px) -->
+            <div class="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center flex-shrink-0"
+                style="width: 40px; height: 40px; font-size: 1rem;">
+                JP
+            </div>
+
+            <!-- Nombre y Rol -->
+            <div class="d-flex flex-column overflow-hidden">
+                <span class="text-dark fw-bold text-truncate" style="font-size: 0.95rem;">Juan Perez</span>
+                <span class="text-muted" style="font-size: 0.8rem;">Funcionario</span>
+            </div>
+
+        </div>
+
+        <!-- Botón Volver a Inicio -->
+        <a routerLink="/home"
+            class="btn btn-outline-danger btn-sm w-100 fw-bold d-flex justify-content-center align-items-center">
+            Volver a Inicio
+        </a>
+    </div>
+
 </div>

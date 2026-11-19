@@ -1,4 +1,6 @@
- package com.sistemareclamos.api.controllers;
+package com.sistemareclamos.api.controllers;
+
+import com.sistemareclamos.api.dtos.AtencionRequestDTO;
 import com.sistemareclamos.api.dtos.DerivarRequestDTO;
 import com.sistemareclamos.api.dtos.ReclamoRequestDTO;
 import com.sistemareclamos.api.dtos.ReclamoResponseDTO;
@@ -8,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -45,8 +48,24 @@ public class ReclamoController {
         return service.derivar(id, dto);
     }
 
-    @GetMapping("/funcionario/{idUsuario}")
-    public List<ReclamoResponseDTO> listarPorFuncionario(@PathVariable Long idUsuario) {
-        return service.listarPorFuncionario(idUsuario);
+    @GetMapping("/mis-casos")
+    public List<ReclamoResponseDTO> listarMisCasos(Authentication authentication) {
+        // Spring Security lee el token y nos da el nombre de usuario automáticamente
+        String username = authentication.getName();
+        return service.listarMisCasos(username);
+    }
+
+    @PostMapping("/{id}/atenciones")
+    public ResponseEntity<ReclamoResponseDTO> registrarAtencion(
+            @PathVariable Long id,
+            @Valid @RequestBody AtencionRequestDTO dto,
+            Authentication authentication) { // Spring inyecta esto mágicamente gracias a tu JWT
+
+        // Obtenemos el nombre del funcionario directamente del Token de seguridad
+        String nombreUsuarioFuncionario = authentication.getName();
+
+        ReclamoResponseDTO reclamoActualizado = service.registrarAtencion(id, dto, nombreUsuarioFuncionario);
+
+        return ResponseEntity.ok(reclamoActualizado);
     }
 }

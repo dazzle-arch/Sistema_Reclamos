@@ -48,7 +48,7 @@ export class FormularioUsuario implements OnInit {
 
   ngOnInit(): void {
     this.rolService.listar().subscribe({ next: (data) => this.roles.set(data) });
-    this.areaService.listar().subscribe({ next: (data) => this.areas.set(data) });
+    this.areaService.listarAreas().subscribe({ next: (data) => this.areas.set(data) });
 
     if (this.idUsuario) {
       this.usuarioService.buscarPorId(this.idUsuario).subscribe({

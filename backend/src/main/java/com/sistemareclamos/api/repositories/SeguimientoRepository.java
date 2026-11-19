@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface SeguimientoRepository extends JpaRepository<Seguimiento, Long> {
-
     List<Seguimiento> findByReclamoIdReclamoOrderByFechaHoraAsc(Long idReclamo);
+    
+    List<Seguimiento> findByReclamoIdReclamo(Long idReclamo);
 }

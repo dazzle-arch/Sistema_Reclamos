@@ -1,7 +1,9 @@
 package com.sistemareclamos.api.services;
+import com.sistemareclamos.api.dtos.AtencionRequestDTO;
 import com.sistemareclamos.api.dtos.DerivarRequestDTO;
 import com.sistemareclamos.api.dtos.ReclamoRequestDTO;
 import com.sistemareclamos.api.dtos.ReclamoResponseDTO;
+import com.sistemareclamos.api.dtos.SeguimientoResponseDTO;
 import com.sistemareclamos.api.entities.*;
 import com.sistemareclamos.api.exception.RecursoNoEncontradoException;
 import com.sistemareclamos.api.exception.SolicitudInvalidaException;
@@ -72,6 +74,7 @@ public class ReclamoServiImpl implements ReclamoService {
 
         return toResponse(repository.save(reclamo));
     }
+
     @Override
     public List<ReclamoResponseDTO> listarPorFuncionario(Long idUsuario) {
         if (!usuarioRepository.existsById(idUsuario)) {
@@ -92,9 +95,11 @@ public class ReclamoServiImpl implements ReclamoService {
         Area area = areaRepository.findById(dto.idArea())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Área no encontrada con id: " + dto.idArea()));
         Usuario funcionario = usuarioRepository.findById(dto.idUsuarioAsignado())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con id: " + dto.idUsuarioAsignado()));
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "Usuario no encontrado con id: " + dto.idUsuarioAsignado()));
         Usuario quienDeriva = usuarioRepository.findById(dto.idUsuarioDeriva())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con id: " + dto.idUsuarioDeriva()));
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "Usuario no encontrado con id: " + dto.idUsuarioDeriva()));
 
         if (!Boolean.TRUE.equals(funcionario.getEstado())) {
             throw new SolicitudInvalidaException("El funcionario está inactivo");
@@ -127,6 +132,64 @@ public class ReclamoServiImpl implements ReclamoService {
         return toResponse(reclamo);
     }
 
+    @Override
+    @Transactional
+    public ReclamoResponseDTO registrarAtencion(Long idReclamo, AtencionRequestDTO dto,
+            String nombreUsuarioFuncionario) {
+
+        // 1. Buscar el reclamo y el funcionario
+        Reclamo reclamo = repository.findById(idReclamo)
+                .orElseThrow(() -> new RuntimeException("Reclamo no encontrado"));
+
+        Usuario funcionario = usuarioRepository.findByNombreUsuario(nombreUsuarioFuncionario)
+                .orElseThrow(() -> new RuntimeException("Funcionario no encontrado"));
+
+        // 2. Crear el registro de trazabilidad usando Seguimiento
+        Seguimiento seguimiento = new Seguimiento();
+        seguimiento.setAccionRealizada(dto.accionRealizada());
+        seguimiento.setObservacion(dto.observacion());
+        seguimiento.setRespuesta(dto.respuestaCiudadano());
+
+        // Seguimiento requiere que le pasemos el estado y la fecha obligatoriamente
+        String estadoFinal = (dto.nuevoEstado() != null && !dto.nuevoEstado().isBlank())
+                ? dto.nuevoEstado().toUpperCase()
+                : reclamo.getEstado();
+
+        seguimiento.setEstado(estadoFinal);
+        seguimiento.setFechaHora(LocalDateTime.now());
+        seguimiento.setReclamo(reclamo);
+        seguimiento.setUsuario(funcionario);
+
+        // Guardamos en la base de datos real
+        seguimientoRepository.save(seguimiento);
+
+        // 3. Actualizar el estado del Reclamo principal
+        reclamo.setEstado(estadoFinal);
+
+        // 4. (Opcional) Si se deriva a otra área
+        if (dto.idAreaDerivada() != null) {
+            Area area = areaRepository.findById(dto.idAreaDerivada())
+                    .orElseThrow(() -> new RuntimeException("Área no encontrada"));
+            reclamo.setArea(area);
+            reclamo.setUsuarioAsignado(null);
+        }
+
+        Reclamo reclamoActualizado = repository.save(reclamo);
+        return toResponse(reclamoActualizado);
+    }
+
+    @Override
+    public List<ReclamoResponseDTO> listarMisCasos(String nombreUsuario) {
+        // 1. Buscamos al usuario real en la base de datos usando el nombre que venía en
+        // el token
+        Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado: " + nombreUsuario));
+
+        // 2. Buscamos sus reclamos usando su ID real
+        return repository.findByUsuarioAsignadoIdUsuario(usuario.getIdUsuario())
+                .stream().map(this::toResponse).toList();
+    }
+
     private Reclamo buscar(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Reclamo no encontrado con id: " + id));
@@ -142,8 +205,27 @@ public class ReclamoServiImpl implements ReclamoService {
         ciudadano.setSexo(dto.sexo());
         return ciudadanoRepository.save(ciudadano);
     }
+    
 
     private ReclamoResponseDTO toResponse(Reclamo r) {
+        // 1. Buscamos el historial de este reclamo
+        List<Seguimiento> seguimientos = seguimientoRepository.findByReclamoIdReclamo(r.getIdReclamo());
+        
+        // 2. Convertimos el historial a DTOs
+        List<SeguimientoResponseDTO> historialDTO = seguimientos.stream()
+            .map(s -> new SeguimientoResponseDTO(
+                s.getIdSeguimiento(),
+                s.getFechaHora(),
+                s.getEstado(),
+                s.getObservacion(),
+                s.getRespuesta(),
+                s.getAccionRealizada(),
+                s.getReclamo().getIdReclamo(),
+                s.getUsuario().getIdUsuario(),
+                s.getUsuario().getNombres()
+            )).toList();
+
+        // 3. Devolvemos el Reclamo con su historial adjunto
         return new ReclamoResponseDTO(
                 r.getIdReclamo(),
                 r.getCiudadano().getIdCiudadano(),
@@ -159,7 +241,8 @@ public class ReclamoServiImpl implements ReclamoService {
                 r.getDescripcion(),
                 r.getEstado(),
                 r.getPrioridad(),
-                r.getFechaRegistro()
+                r.getFechaRegistro(),
+                historialDTO // Pasamos la lista aquí
         );
     }
 }
