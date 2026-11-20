@@ -51,10 +51,15 @@ public class ReclamoServiImpl implements ReclamoService {
         Ciudadano ciudadano = ciudadanoRepository.findByDni(dto.dni())
                 .orElseGet(() -> crearCiudadano(dto));
 
+        Area areaInicial = areaRepository.findById(1L)
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "Área inicial (Atención al Ciudadano) no encontrada"));
+    
         Reclamo reclamo = new Reclamo();
         reclamo.setCiudadano(ciudadano);
         reclamo.setCategoria(categoria);
         reclamo.setAsunto(dto.asunto());
+        reclamo.setArea(areaInicial);
         reclamo.setDescripcion(dto.descripcion());
         reclamo.setEstado("REGISTRADO");
         reclamo.setPrioridad("MEDIA");
@@ -136,14 +141,16 @@ public class ReclamoServiImpl implements ReclamoService {
     @Transactional
     public ReclamoResponseDTO registrarAtencion(Long idReclamo, AtencionRequestDTO dto,
             String nombreUsuarioFuncionario) {
-
+        
         // 1. Buscar el reclamo y el funcionario
         Reclamo reclamo = repository.findById(idReclamo)
                 .orElseThrow(() -> new RuntimeException("Reclamo no encontrado"));
 
         Usuario funcionario = usuarioRepository.findByNombreUsuario(nombreUsuarioFuncionario)
                 .orElseThrow(() -> new RuntimeException("Funcionario no encontrado"));
-
+        if ("CERRADO".equalsIgnoreCase(reclamo.getEstado())) {
+            throw new IllegalStateException("No se pueden registrar atenciones en un reclamo cerrado.");
+        }
         // 2. Crear el registro de trazabilidad usando Seguimiento
         Seguimiento seguimiento = new Seguimiento();
         seguimiento.setAccionRealizada(dto.accionRealizada());
@@ -165,6 +172,9 @@ public class ReclamoServiImpl implements ReclamoService {
 
         // 3. Actualizar el estado del Reclamo principal
         reclamo.setEstado(estadoFinal);
+        if (dto.nuevaPrioridad() != null && !dto.nuevaPrioridad().isBlank()) {
+            reclamo.setPrioridad(dto.nuevaPrioridad().toUpperCase());
+        }
 
         // 4. (Opcional) Si se deriva a otra área
         if (dto.idAreaDerivada() != null) {
@@ -185,9 +195,15 @@ public class ReclamoServiImpl implements ReclamoService {
         Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado: " + nombreUsuario));
 
-        // 2. Buscamos sus reclamos usando su ID real
-        return repository.findByUsuarioAsignadoIdUsuario(usuario.getIdUsuario())
-                .stream().map(this::toResponse).toList();
+        // 2. Buscamos sus reclamos usando su ID real y el area correspondiente
+        if (usuario.getArea() == null) {
+            return List.of();
+        }
+
+        return repository.findByAreaIdArea(usuario.getArea().getIdArea())
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     private Reclamo buscar(Long id) {

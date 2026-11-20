@@ -3,5 +3,6 @@ export interface AtencionRequest {
     accionRealizada: string;
     observacion: string;
     respuestaCiudadano: string;
-    idAreaDerivada?: number; // Opcional
+    idAreaDerivada?: number; 
+    nuevaPrioridad?: string | null;
 }

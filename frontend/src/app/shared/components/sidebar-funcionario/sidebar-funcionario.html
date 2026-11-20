@@ -30,16 +30,20 @@
         <!-- Información del Usuario -->
         <div class="d-flex align-items-center gap-2 mb-3 px-2">
 
-            <!-- Círculo de Imagen de Perfil (Reducido a 40px) -->
-            <div class="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center flex-shrink-0"
+            <!-- Círculo de Imagen de Perfil -->
+            <div class="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center flex-shrink-0 fw-bold"
                 style="width: 40px; height: 40px; font-size: 1rem;">
-                JP
+                {{ iniciales }}
             </div>
 
             <!-- Nombre y Rol -->
             <div class="d-flex flex-column overflow-hidden">
-                <span class="text-dark fw-bold text-truncate" style="font-size: 0.95rem;">Juan Perez</span>
-                <span class="text-muted" style="font-size: 0.8rem;">Funcionario</span>
+                <span class="text-dark fw-bold text-truncate" style="font-size: 0.95rem;" [title]="nombreUsuario">
+                    {{ nombreUsuario }}
+                </span>
+                <span class="text-muted text-truncate" style="font-size: 0.8rem;">
+                    {{ rolUsuario }}
+                </span>
             </div>
 
         </div>

@@ -18,4 +18,6 @@ public interface ReclamoRepository extends JpaRepository<Reclamo, Long> {
     Optional<Reclamo> findByIdReclamoAndCiudadanoDni(Long idReclamo, String dni);
 
     List<Reclamo> findByUsuarioAsignadoIdUsuario(Long idUsuario);
+
+    List<Reclamo> findByAreaIdArea(Long idArea);
 }

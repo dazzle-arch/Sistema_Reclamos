@@ -1,5 +1,6 @@
 package com.sistemareclamos.api.services;
 
+import com.sistemareclamos.api.entities.Usuario; // Verifica si tu paquete es entities o models
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,16 +11,17 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    // Clave secreta (En producción debería ir en el application.properties)
-    // Es una cadena Base64 de al menos 256 bits
     private static final String SECRET_KEY = "Q2xhdmVTZWNyZXRhTXV5U2VndXJhUGFyYVNpc3RlbWFSZWNsYW1vc011bmljaXBhbDIwMjY=";
 
-    public String generarToken(String nombreUsuario, Long idRol) {
+    public String generarToken(Usuario usuario) {
         return Jwts.builder()
-                .subject(nombreUsuario)
-                .claim("rol", idRol) // Guardamos el rol dentro del token para que Angular lo lea
+                .subject(usuario.getNombreUsuario())
+                .claim("idUsuario", usuario.getIdUsuario())
+                .claim("rol", usuario.getRol().getIdRol())
+                .claim("nombres", usuario.getNombres())
+                .claim("idArea", usuario.getArea() != null ? usuario.getArea().getIdArea() : null)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // Expira en 10 horas
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 horas
                 .signWith(obtenerFirma(), Jwts.SIG.HS256)
                 .compact();
     }

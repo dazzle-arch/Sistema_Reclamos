@@ -42,22 +42,21 @@ export class BandejaCasos implements OnInit {
           'MUY ALTA': 1, 'ALTA': 2, 'MEDIA': 3, 'BAJA': 4
         };
 
-        // Envolvemos 'data' en [...data] para crear una nueva referencia en memoria
-        // Esto obliga al @for de Angular a darse cuenta de que hay datos nuevos
-        this.reclamosAsignados = [...data].sort((a, b) => {
-          const valorA = valoresPrioridad[a.prioridad?.toUpperCase()] || 99;
-          const valorB = valoresPrioridad[b.prioridad?.toUpperCase()] || 99;
-          return valorA - valorB;
-        });
+        this.reclamosAsignados = data
+          .filter((r) => r.estado !== 'RESUELTO' && r.estado !== 'CERRADO')
+          .sort((a, b) => {
+            const valorA = valoresPrioridad[a.prioridad?.toUpperCase()] || 99;
+            const valorB = valoresPrioridad[b.prioridad?.toUpperCase()] || 99;
+            return valorA - valorB;
+          });
 
         this.cargando = false;
-        
-        // Disparamos el repintado manual de la tabla en el HTML
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error al cargar la bandeja desde el servidor', err);
         this.cargando = false;
+        this.cdr.detectChanges(); // Asegura quitar el spinner si falla la petición
       }
     });
   }
