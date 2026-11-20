@@ -128,10 +128,21 @@
                         <div class="form-text">Adjuntar evidencia (opcional)</div>
                     </div>
                 </div>
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-danger px-5 py-2 fw-bold" [disabled]="enviando">Enviar</button>
+                @if (mensajeError()) {
+                    <div class="alert alert-danger text-center fw-bold mb-4" role="alert">
+                        {{ mensajeError() }}
+                    </div>
+                }
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                    <a routerLink="/home" class="btn btn-outline-secondary px-4 py-2 fw-bold">
+                        Volver al inicio
+                    </a>
+                    <button type="submit" class="btn btn-danger px-5 py-2 fw-bold" [disabled]="enviando()">
+                        {{ enviando() ? 'Enviando...' : 'Enviar' }}
+                    </button>
                 </div>
+
+                
 
             </div>
                 
@@ -140,3 +151,50 @@
     </div>
 
 </main>
+
+@if (codigoRegistrado() !== null) {
+    <div class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+         style="background-color: rgba(0, 0, 0, 0.65); z-index: 1060;">
+        <div class="card border-0 shadow-lg text-center overflow-hidden"
+             style="max-width: 560px; width: 92%; border-radius: 1rem;">
+
+            <!-- Cabecera roja institucional -->
+            <div class="bg-danger text-white py-4 px-4">
+                <i class="bi bi-check-circle-fill" style="font-size: 3.5rem;"></i>
+                <h2 class="fw-bold mt-2 mb-0">¡Reclamo registrado!</h2>
+            </div>
+
+            <!-- Cuerpo con el número resaltado -->
+            <div class="card-body p-4 p-md-5 bg-white">
+                <p class="fs-5 text-secondary mb-3">
+                    Su solicitud fue recibida correctamente. Guarde el siguiente número para hacer seguimiento:
+                </p>
+
+                <div class="border border-2 border-danger rounded-3 py-4 px-3 mb-3 bg-light">
+                    <div class="text-uppercase fw-bold text-muted small mb-1">
+                        Código de reclamo
+                    </div>
+                    <div class="display-3 fw-bold text-danger lh-1">
+                        N° {{ codigoRegistrado() }}
+                    </div>
+                </div>
+
+                <button type="button"
+                        class="btn btn-outline-danger btn-sm fw-bold mb-4 px-3"
+                        (click)="copiarCodigo()">
+                    <i class="bi" [class.bi-clipboard-check]="copiado()" [class.bi-clipboard]="!copiado()"></i>
+                    {{ copiado() ? '¡Código copiado!' : 'Copiar código' }}
+                </button>
+
+                <div>
+                    <button type="button"
+                            class="btn btn-danger btn-lg w-100 fw-bold py-3 fs-5"
+                            (click)="confirmarYVolver()">
+                        Entendido, volver al inicio
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
