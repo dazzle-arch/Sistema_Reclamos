@@ -53,10 +53,29 @@ export class AuthService {
         try {
             const decoded: any = jwtDecode(token);
             // Extrae el ID del usuario del payload del token. 
-            // Si tu backend lo guarda con otro nombre (como 'id'), cámbialo aquí.
             return decoded.idUsuario || decoded.id;
         } catch (Error) {
             return null;
         }
+    }
+
+    obtenerNombreUsuario(): string {
+        const token = this.obtenerToken();
+        if (!token) return 'Funcionario';
+
+        try {
+            const decoded: any = jwtDecode(token);
+            // Busca el nombre completo si lo incluiste en el JWT; si no, usa el 'sub' (ej. funcionario_carlos)
+            return decoded.nombres || decoded.nombre || decoded.sub || 'Funcionario';
+        } catch (Error) {
+            return 'Funcionario';
+        }
+    }
+
+    obtenerNombreRol(): string {
+        const idRol = this.obtenerIdRol();
+        if (idRol === 1) return 'Administrador';
+        if (idRol === 2) return 'Funcionario';
+        return 'Usuario';
     }
 }

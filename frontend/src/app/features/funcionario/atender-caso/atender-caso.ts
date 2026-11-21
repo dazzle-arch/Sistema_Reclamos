@@ -24,7 +24,8 @@ export class AtenderCaso implements OnInit {
   cargando = true;
   atencionForm!: FormGroup;
   areas: AreaResponse[] = [];
-  mensajeExito: string = '';
+  mensajeExito = '';
+  guardando = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -51,12 +52,17 @@ export class AtenderCaso implements OnInit {
     // 4. Escuchamos los cambios del campo "nuevoEstado" en tiempo real
     this.atencionForm.get('nuevoEstado')?.valueChanges.subscribe(estadoSeleccionado => {
       const derivarControl = this.atencionForm.get('idAreaDerivada');
+      const prioridadControl = this.atencionForm.get('nuevaPrioridad');
 
       if (estadoSeleccionado === 'CERRADO') {
-        derivarControl?.disable(); // Desactiva visualmente el select
-        derivarControl?.setValue(''); // Lo limpia para no enviar un área por error
+        derivarControl?.disable();
+        derivarControl?.setValue('');
+
+        prioridadControl?.disable();
+        prioridadControl?.setValue('');
       } else {
-        derivarControl?.enable(); // Lo vuelve a activar si elige otro estado
+        derivarControl?.enable();
+        prioridadControl?.enable();
       }
     });
   }
@@ -64,6 +70,7 @@ export class AtenderCaso implements OnInit {
   inicializarFormulario() {
     this.atencionForm = this.fb.group({
       nuevoEstado: ['', Validators.required],
+      nuevaPrioridad: [''],
       accionRealizada: ['', Validators.required],
       observacion: [''],
       respuestaCiudadano: [''],
@@ -88,27 +95,36 @@ export class AtenderCaso implements OnInit {
   }
 
   guardarAtencion() {
-    if (this.atencionForm.invalid) {
+    if (this.atencionForm.invalid || this.guardando) {
       return;
     }
 
-    const payload: AtencionRequest = this.atencionForm.value;
+    // getRawValue() lee todos los campos aunque idAreaDerivada esté deshabilitado
+    this.guardando = true;
+    const raw = this.atencionForm.getRawValue();
+    const payload: AtencionRequest = {
+      ...raw,
+      idAreaDerivada: raw.idAreaDerivada ? Number(raw.idAreaDerivada) : null,
+      nuevaPrioridad: raw.nuevaPrioridad || null
+    };
 
     this.reclamoService.registrarAtencion(this.idCaso, payload).subscribe({
       next: () => {
-        this.mensajeExito = '¡Atención registrada correctamente! Redirigiendo a la bandeja...';
+        this.mensajeExito = '¡Atención registrada correctamente! Redirigiendo...';
         this.cdr.detectChanges();
 
-        // Espera 2 segundos para que el funcionario lea el mensaje y luego redirige
         setTimeout(() => {
           this.router.navigate(['/funcionario/bandeja-casos']);
         }, 2000);
       },
-      error: (err) => console.error('Error al guardar', err)
+      error: (err) => {
+        console.error('Error al guardar atención:', err);
+        this.guardando = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
-  // Asegúrate de inyectar HttpClient en el constructor (o crear un AreaService)
   cargarAreas() {
     this.areaService.listarAreas().subscribe({
       next: (data) => {
@@ -117,5 +133,12 @@ export class AtenderCaso implements OnInit {
       },
       error: (err) => console.error('Error al cargar las áreas', err)
     });
+  }
+
+  // Decide si la vista es solo lectura según el estado del reclamo
+  get esSoloLectura(): boolean {
+    if (!this.reclamo) return true;
+    // Si quieres que RESUELTO todavía pueda pasarse a CERRADO, deja solo: === 'CERRADO'
+    return this.reclamo.estado === 'CERRADO' || this.reclamo.estado === 'RESUELTO';
   }
 }

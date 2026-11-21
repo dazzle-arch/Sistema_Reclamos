@@ -27,7 +27,7 @@ public class AuthService {
         }
 
         // 3. Generar el token
-        String token = jwtService.generarToken(usuario.getNombreUsuario(), usuario.getRol().getIdRol());
+        String token = jwtService.generarToken(usuario);
 
         // 4. Armar la respuesta para Angular
         return new AuthResponseDTO(

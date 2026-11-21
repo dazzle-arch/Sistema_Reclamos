@@ -10,6 +10,7 @@ public record AtencionRequestDTO(
         String accionRealizada,
         
         String observacion,
+        String nuevaPrioridad,
         String respuestaCiudadano,
         Long idAreaDerivada // Opcional, si se deriva
 ) {}
