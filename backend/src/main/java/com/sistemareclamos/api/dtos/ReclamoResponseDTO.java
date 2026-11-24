@@ -9,6 +9,8 @@ public record ReclamoResponseDTO (
         Long idCiudadano,
         String nombreCiudadano,
         String dniCiudadano,
+        String telefonoCiudadano,
+        String correoCiudadano,
         Long idCategoria,
         String nombreCategoria,
         Long idArea,
@@ -19,10 +21,7 @@ public record ReclamoResponseDTO (
         String descripcion,
         String estado,
         String prioridad,
-        
-        // Añadir esta línea exacta sobre tu fecha:
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime fechaRegistro,
-
         List<SeguimientoResponseDTO> historial
 ) {}

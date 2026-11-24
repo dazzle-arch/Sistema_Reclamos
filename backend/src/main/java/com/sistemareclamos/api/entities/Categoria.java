@@ -19,6 +19,9 @@ public class Categoria {
     @Column(length = 255)
     private String descripcion;
 
+    @Column(name = "plazo_dias", columnDefinition = "integer default 15")
+    private Integer plazoDias = 15;
+
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reclamo> reclamos;
 }

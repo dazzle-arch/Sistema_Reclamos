@@ -14,6 +14,8 @@ export interface ReclamoResponse {
     idCiudadano: number;
     nombreCiudadano: string;
     dniCiudadano: string;
+    telefonoCiudadano: string;
+    correoCiudadano: string;
     idCategoria: number;
     nombreCategoria: string;
     idArea: number | null;

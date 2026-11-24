@@ -5,44 +5,77 @@
         <app-campana-notificaciones></app-campana-notificaciones>
 
         <div class="content flex-grow-1 p-4 d-flex gap-4">
-            
-            <div class="border rounded p-3" style="width: 250px; height: fit-content;">
-                <h6 class="fw-bold mb-3">Categorias</h6>
 
-                <div class="mb-4">
-                    <label class="form-label">Ordenar por</label>
-                    <select class="form-select">
-                        <option value="" selected disabled>Seleccione</option>
-                        <option value="reciente">Más reciente</option>
-                        <option value="antiguo">Más antiguo</option>
-                        <option value="estado">Por estado</option>
-                        <option value="departamento">Por departamento</option>
+            <div class="border rounded p-3" style="width: 270px; height: fit-content;">
+                <h6 class="fw-bold mb-3">Filtros</h6>
+
+                <div class="mb-3">
+                    <label class="form-label">Desde</label>
+                    <input type="date" class="form-control" [(ngModel)]="desde" name="desde">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Hasta</label>
+                    <input type="date" class="form-control" [(ngModel)]="hasta" name="hasta">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Estado <small class="text-muted">(reporte por área)</small></label>
+                    <select class="form-select" [(ngModel)]="estado" name="estado">
+                        <option value="">Todos</option>
+                        @for (e of estados; track e.valor) {
+                            <option [value]="e.valor">{{ e.texto }}</option>
+                        }
                     </select>
                 </div>
 
                 <div>
-                    <label class="form-label d-block">Estado</label>
-                    <div class="d-flex justify-content-between small text-muted mb-1">
-                        <span>Inicio</span>
-                        <span>Culminado</span>
-                    </div>
-                    <input type="range" class="form-range" min="0" max="100" value="30">
+                    <label class="form-label">Área <small class="text-muted">(carga por funcionario)</small></label>
+                    <select class="form-select" [(ngModel)]="idArea" name="idArea">
+                        <option [ngValue]="null">Todas</option>
+                        @for (a of areas(); track a.idArea) {
+                            <option [ngValue]="a.idArea">{{ a.nombre }}</option>
+                        }
+                    </select>
                 </div>
+
+                <p class="small text-muted mt-3 mb-0">Rango máximo: 1 año.</p>
             </div>
 
             <div class="flex-grow-1">
-                <ul class="list-group">
-                    <li class="list-group-item border-warning">Reporte 1</li>
-                    <li class="list-group-item border-warning">Reporte 2</li>
-                    <li class="list-group-item border-warning">Reporte 3</li>
-                    <li class="list-group-item border-warning">Reporte 4</li>
-                    <li class="list-group-item border-warning">Reporte 5</li>
-                    <li class="list-group-item border-warning">Reporte 6</li>
-                    <li class="list-group-item border-warning">Reporte 7</li>
-                    <li class="list-group-item border-warning">Reporte 8</li>
-                    <li class="list-group-item border-warning">Reporte 9</li>
-                    <li class="list-group-item border-warning">Reporte 10</li>
+                <h4 class="fw-bold mb-3">Reportes</h4>
+
+                @if (error()) {
+                    <div class="alert alert-danger">{{ error() }}</div>
+                }
+
+                <h6 class="fw-bold text-primary">Reportes analíticos</h6>
+                <ul class="list-group mb-4">
+                    @for (r of reportes; track r.tipo) {
+                    <li class="list-group-item d-flex justify-content-between align-items-center gap-3">
+                        <div>
+                            <div class="fw-bold">{{ r.nombre }}</div>
+                            <small class="text-muted">{{ r.descripcion }}</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-sm btn-primary" style="min-width: 74px;"
+                                    [disabled]="ocupado() !== ''" (click)="descargar(r, 'pdf')">
+                                {{ ocupado() === r.tipo + 'pdf' ? 'Generando...' : 'PDF' }}
+                            </button>
+                            <button class="btn btn-sm btn-success" style="min-width: 74px;"
+                                    [disabled]="ocupado() !== ''" (click)="descargar(r, 'xlsx')">
+                                {{ ocupado() === r.tipo + 'xlsx' ? 'Generando...' : 'Excel' }}
+                            </button>
+                        </div>
+                    </li>
+                    }
                 </ul>
+
+                <h6 class="fw-bold text-primary">Reportes por entidad</h6>
+                <div class="border rounded p-3 text-muted small">
+                    Próximamente: listados de reclamos, ciudadanos, usuarios, áreas, categorías, roles,
+                    seguimientos, notificaciones y documentos.
+                </div>
             </div>
         </div>
     </div>

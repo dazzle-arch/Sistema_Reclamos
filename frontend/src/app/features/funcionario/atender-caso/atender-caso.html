@@ -23,10 +23,7 @@
                 <h4 class="fw-bold m-0">
                     {{ esSoloLectura ? 'Detalle del caso' : 'Atender caso' }} N° {{ idCaso }}
                 </h4>
-                <a [routerLink]="esSoloLectura ? '/funcionario/casos-atendidos' : '/funcionario/bandeja-casos'"
-                    class="btn btn-outline-danger btn-sm">
-                    {{ esSoloLectura ? 'Volver a casos atendidos' : 'Volver a la bandeja' }}
-                </a>
+                <a routerLink="/funcionario/bandeja-casos" class="btn btn-outline-danger btn-sm">Volver a la bandeja</a>
             </div>
 
             <div class="row g-3 mb-4">
@@ -48,6 +45,8 @@
                         <p class="mb-1"><span class="fw-bold">Fecha:</span> {{ reclamo.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</p>
                         <p class="mb-1"><span class="fw-bold">Prioridad:</span> <span class="badge bg-warning text-dark">{{ reclamo.prioridad }}</span></p>
                         <p class="mb-0"><span class="fw-bold">Estado actual:</span> <span class="badge bg-secondary">{{ reclamo.estado }}</span></p>
+                        <p class="mb-1"><span class="fw-bold">Teléfono:</span> {{ reclamo.telefonoCiudadano }}</p>
+                        <p class="mb-0"><span class="fw-bold">Correo:</span> {{ reclamo.correoCiudadano }}</p>
                     </div>
                 </div>
             </div>
@@ -60,10 +59,16 @@
             <!-- Bloque original de evidencia restaurado -->
             <div class="border rounded p-3 mb-4">
                 <h6 class="fw-bold text-danger">Evidencia adjunta</h6>
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-muted">Sin evidencia adjunta</span>
-                    <a href="#" class="btn btn-sm btn-outline-danger">Descargar</a>
+                @for (d of documentos; track d.idDocumento) {
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>{{ d.nombreArchivo }}
+                        @if (d.tamanio) { <small class="text-muted">({{ (d.tamanio / 1024) | number:'1.0-0' }} KB)</small> }
+                    </span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="descargarDocumento(d)">Descargar</button>
                 </div>
+                } @empty {
+                <span class="text-muted">Sin evidencia adjunta</span>
+                }
             </div>
 
             <h6 class="fw-bold">Historial de trazabilidad</h6>
@@ -94,6 +99,9 @@
             </table>
 
             @if (!esSoloLectura) {
+                @if (errorMensaje) {
+                    <div class="alert alert-danger">{{ errorMensaje }}</div>
+                }
             <h6 class="fw-bold text-danger">Registrar atención</h6>
             <form class="border rounded p-3" [formGroup]="atencionForm" (ngSubmit)="guardarAtencion()">
 
@@ -176,18 +184,21 @@
                 </div>
             </form>
             } @else {
-            <div class="alert alert-secondary d-flex align-items-center mt-4 mb-0" role="alert">
-                <i class="bi bi-lock-fill me-2"></i>
-                <span>
-                    Este reclamo se encuentra en estado <strong>{{ reclamo.estado }}</strong>.
-                    Solo está disponible para consulta del historial y no admite nuevas atenciones.
-                </span>
-            </div>
+                <div class="alert alert-secondary d-flex align-items-center mt-4 mb-0" role="alert">
+                    <i class="bi bi-lock-fill me-2"></i>
+                    <span>
+                        @if (esDeOtro) {
+                            Este reclamo está asignado a <strong>{{ reclamo.nombreUsuarioAsignado }}</strong>. Solo puedes consultarlo.
+                        } @else {
+                            Este reclamo está <strong>{{ reclamo.estado }}</strong> y no admite nuevas atenciones.
+                        }
+                    </span>
+                </div>
             }
             } @else {
             <div class="alert alert-danger mt-4">
-                No se pudo cargar la información del caso. Es posible que tu sesión haya expirado.
-                <a routerLink="/login" class="alert-link">Vuelve a iniciar sesión</a>.
+                {{ errorMensaje || 'No se pudo cargar la información del caso.' }}
+                <a routerLink="/funcionario/bandeja-casos" class="alert-link">Volver a la bandeja</a>.
             </div>
             }
         </div>

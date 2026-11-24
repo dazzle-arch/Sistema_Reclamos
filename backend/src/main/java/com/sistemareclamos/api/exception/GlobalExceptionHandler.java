@@ -42,6 +42,32 @@ public class GlobalExceptionHandler {
         return construir(HttpStatus.CONFLICT, "La operación no es posible: el registro está en uso o duplicado");
     }
 
+    @ExceptionHandler(AutenticacionException.class)
+    public ResponseEntity<ErrorResponse> noAutenticado(AutenticacionException ex) {
+        return construir(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    @ExceptionHandler(CuentaBloqueadaException.class)
+    public ResponseEntity<ErrorResponse> bloqueada(CuentaBloqueadaException ex) {
+        return construir(HttpStatus.LOCKED, ex.getMessage());
+    }
+
+    @ExceptionHandler(AccesoDenegadoException.class)
+    public ResponseEntity<ErrorResponse> accesoDenegado(AccesoDenegadoException ex) {
+        return construir(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> archivoGrande(org.springframework.web.multipart.MaxUploadSizeExceededException ex) {
+        return construir(HttpStatus.PAYLOAD_TOO_LARGE, "El archivo supera el máximo de 5 MB");
+    }
+
+    @ExceptionHandler({org.springframework.web.multipart.support.MissingServletRequestPartException.class,
+            org.springframework.web.bind.MissingServletRequestParameterException.class})
+    public ResponseEntity<ErrorResponse> faltaParte(Exception ex) {
+        return construir(HttpStatus.BAD_REQUEST, "Faltan datos obligatorios en la solicitud");
+    }
+
     private ResponseEntity<ErrorResponse> construir(HttpStatus status, String mensaje){
         return ResponseEntity.status(status)
                 .body(new ErrorResponse(LocalDateTime.now(), status.value(), mensaje));

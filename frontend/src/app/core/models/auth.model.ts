@@ -8,4 +8,5 @@ export interface AuthResponse {
     nombreUsuario: string;
     idRol: number;
     idArea: number;
+    idUsuario: number;
 }

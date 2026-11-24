@@ -9,5 +9,6 @@ public record NotificacionResponseDTO(
         String asunto,
         String mensaje,
         LocalDateTime fechaEnvio,
-        String estado
+        String estado,
+        boolean leida
 ) {}

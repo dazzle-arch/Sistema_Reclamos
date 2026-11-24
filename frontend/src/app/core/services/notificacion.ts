@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable} from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { Notificacion } from '../models/notificacion.model';  
+import { NotificacionResponse } from '../models/notificacionResponse.model';
 
 @Injectable({
     providedIn: 'root'
@@ -10,13 +10,21 @@ import { Notificacion } from '../models/notificacion.model';
 export class NotificacionService {
     private apiUrl = `${environment.apiUrl}/notificaciones`;
 
-    constructor(private http: HttpClient){}
+    constructor(private http: HttpClient) {}
 
-    listarPorUsuario(idUsuarioDestino: number): Observable<Notificacion[]> {
-        return this.http.get<Notificacion[]>(`${this.apiUrl}/usuario/${idUsuarioDestino}`);
+    listarMisNotificaciones(): Observable<NotificacionResponse[]> {
+        return this.http.get<NotificacionResponse[]>(`${this.apiUrl}/mis-notificaciones`);
     }
 
-    listarPorCiudadano(idReclamo: number): Observable<Notificacion[]>{
-        return this.http.get<Notificacion[]>(`${this.apiUrl}/reclamo/${idReclamo}`)
+    contarNoLeidas(): Observable<{ cantidad: number }> {
+        return this.http.get<{ cantidad: number }>(`${this.apiUrl}/mis-notificaciones/no-leidas/cantidad`);
+    }
+
+    marcarLeida(id: number): Observable<NotificacionResponse> {
+        return this.http.patch<NotificacionResponse>(`${this.apiUrl}/${id}/leida`, null);
+    }
+
+    marcarTodasLeidas(): Observable<{ actualizadas: number }> {
+        return this.http.patch<{ actualizadas: number }>(`${this.apiUrl}/leidas`, null);
     }
 }

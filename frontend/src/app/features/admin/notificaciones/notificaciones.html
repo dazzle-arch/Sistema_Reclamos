@@ -1,58 +1,62 @@
 <main class="panel-container d-flex justify-content-center align-items-center py-5">
     <div class="card shadow-sm d-flex flex-row" style="width: 1500px; min-height: 800px;">
-        
-        <!-- <app-sidebar-admin></app-sidebar-admin> -->
+
+        @if (esAdmin) {
+            <app-sidebar-admin></app-sidebar-admin>
+        } @else {
+            <app-sidebar-funcionario></app-sidebar-funcionario>
+        }
         <app-campana-notificaciones></app-campana-notificaciones>
 
         <div class="content flex-grow-1 p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="fw-bold m-0">Notificaciones</h4>
-                <button class="btn btn-outline-danger btn-sm">Marcar todas como leidas</button>
+                <button class="btn btn-outline-danger btn-sm" (click)="marcarTodas()">
+                    Marcar todas como leídas
+                </button>
             </div>
 
             <div class="d-flex gap-3 mb-4">
-                <select class="form-select" style="max-width: 200px;">
-                    <option value="" selected disabled>Filtrar por estado</option>
-                    <option value="pendiente">Pendientes</option>
-                    <option value="enviada">Enviadas</option>
-                    <option value="fallido">Fallidas</option>
+                <select class="form-select" style="max-width: 200px;"
+                        (change)="filtro.set($any($event.target).value)">
+                    <option value="todas" selected>Todas</option>
+                    <option value="no-leidas">No leídas</option>
                 </select>
             </div>
 
+            @if (cargando()) {
+                <p class="text-muted">Cargando notificaciones...</p>
+            } @else if (error()) {
+                <p class="text-danger">No se pudieron cargar las notificaciones</p>
+            } @else {
             <div class="list-group">
-                <div class="list-group-item notificaciones-item">
+                @for (n of visibles(); track n.idNotificacion) {
+                <div class="list-group-item notificaciones-item"
+                    [class.bg-light]="!n.leida"
+                    style="cursor: pointer;"
+                    (click)="marcar(n)">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <p class="fw-bold mb-1">Asunto de la notificacion</p>
-                            <p class="mb-1 small">Mensaje de la notificación</p>
-                            <p class="mb-0 small text-muted">Reclamo N° · Fecha y hora</p>
+                            <p class="mb-1" [class.fw-bold]="!n.leida">{{ n.asunto }}</p>
+                            <p class="mb-1 small">{{ n.mensaje }}</p>
+                            <p class="mb-0 small text-muted">
+                                Reclamo N° {{ n.idReclamo }} · {{ n.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}
+                            </p>
                         </div>
-                        <span class="badge bg-warning text-dark">Pendiente</span>
+                        @if (n.leida) {
+                            <span class="badge bg-secondary">Leída</span>
+                        } @else {
+                            <span class="badge bg-danger">Nueva</span>
+                        }
                     </div>
                 </div>
-
-                <div class="list-group-item notificaciones-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="fw-bold mb-1">Asunto de la notificacion</p>
-                            <p class="mb-1 small">Mensaje de la notificación</p>
-                            <p class="mb-0 small text-muted">Reclamo N° · Fecha y hora</p>
-                        </div>
-                        <span class="badge bg-warning text-dark">Enviado</span>
-                    </div>
+                } @empty {
+                <div class="list-group-item text-muted text-center py-4">
+                    {{ filtro() === 'no-leidas' ? 'No tienes notificaciones sin leer.' : 'No tienes notificaciones.' }}
                 </div>
-
-                <div class="list-group-item notificaciones-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <p class="fw-bold mb-1">Asunto de la notificacion</p>
-                            <p class="mb-1 small">Mensaje de la notificación</p>
-                            <p class="mb-0 small text-muted">Reclamo N° · Fecha y hora</p>
-                        </div>
-                        <span class="badge bg-warning text-dark">Fallido</span>
-                    </div>
-                </div>
+                }
             </div>
+            }
         </div>
     </div>
 </main>

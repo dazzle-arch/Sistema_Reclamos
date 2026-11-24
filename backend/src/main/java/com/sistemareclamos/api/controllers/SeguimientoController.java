@@ -2,19 +2,21 @@ package com.sistemareclamos.api.controllers;
 
 import com.sistemareclamos.api.dtos.SeguimientoRequestDTO;
 import com.sistemareclamos.api.dtos.SeguimientoResponseDTO;
+import com.sistemareclamos.api.security.UsuarioPrincipal;
 import com.sistemareclamos.api.services.SeguimientoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/seguimientos")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
 public class SeguimientoController {
+
     private final SeguimientoService service;
 
     @GetMapping
@@ -23,18 +25,21 @@ public class SeguimientoController {
     }
 
     @GetMapping("/{id}")
-    public SeguimientoResponseDTO obtenerPorId(@PathVariable Long id) {
-        return service.obtenerPorId(id);
+    public SeguimientoResponseDTO obtenerPorId(@PathVariable Long id,
+                                               @AuthenticationPrincipal UsuarioPrincipal usuario) {
+        return service.obtenerPorId(id, usuario);
     }
 
     @GetMapping("/reclamo/{idReclamo}")
-    public List<SeguimientoResponseDTO> listarPorReclamo(@PathVariable Long idReclamo) {
-        return service.listarPorReclamo(idReclamo);
+    public List<SeguimientoResponseDTO> listarPorReclamo(@PathVariable Long idReclamo,
+                                                         @AuthenticationPrincipal UsuarioPrincipal usuario) {
+        return service.listarPorReclamo(idReclamo, usuario);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SeguimientoResponseDTO crear(@Valid @RequestBody SeguimientoRequestDTO dto) {
-        return service.crear(dto);
+    public SeguimientoResponseDTO crear(@Valid @RequestBody SeguimientoRequestDTO dto,
+                                        @AuthenticationPrincipal UsuarioPrincipal usuario) {
+        return service.crear(dto, usuario);
     }
 }

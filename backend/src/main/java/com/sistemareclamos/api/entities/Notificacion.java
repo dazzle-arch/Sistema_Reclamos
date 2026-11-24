@@ -28,6 +28,9 @@ public class Notificacion {
     @Column(nullable = false, length = 20)
     private String estado = "PENDIENTE";
 
+    @Column(name = "leida")
+    private Boolean leida = false;
+
     // Solo se llena cuando es para un funcionario/admin; null = notificación para el ciudadano
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario_destino")
