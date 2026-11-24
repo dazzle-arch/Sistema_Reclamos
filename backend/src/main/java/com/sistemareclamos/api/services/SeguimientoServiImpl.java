@@ -10,6 +10,8 @@ import com.sistemareclamos.api.exception.SolicitudInvalidaException;
 import com.sistemareclamos.api.repositories.ReclamoRepository;
 import com.sistemareclamos.api.repositories.SeguimientoRepository;
 import com.sistemareclamos.api.repositories.UsuarioRepository;
+import com.sistemareclamos.api.security.AccesoReclamo;
+import com.sistemareclamos.api.security.UsuarioPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +23,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class SeguimientoServiImpl implements SeguimientoService {
+
     private static final List<String> ESTADOS_VALIDOS =
             List.of("REGISTRADO", "EN_PROCESO", "RESUELTO", "CERRADO");
 
     private final SeguimientoRepository repository;
     private final ReclamoRepository reclamoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final AccesoReclamo acceso;
 
     @Override
     public List<SeguimientoResponseDTO> listar() {
@@ -34,24 +38,25 @@ public class SeguimientoServiImpl implements SeguimientoService {
     }
 
     @Override
-    public SeguimientoResponseDTO obtenerPorId(Long id) {
-        return repository.findById(id)
-                .map(this::toResponse)
+    public SeguimientoResponseDTO obtenerPorId(Long id, UsuarioPrincipal usuario) {
+        Seguimiento s = repository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Seguimiento no encontrado con id: " + id));
+        acceso.verificarLectura(s.getReclamo(), usuario);
+        return toResponse(s);
     }
 
     @Override
-    public List<SeguimientoResponseDTO> listarPorReclamo(Long idReclamo) {
-        if (!reclamoRepository.existsById(idReclamo)) {
-            throw new RecursoNoEncontradoException("Reclamo no encontrado con id: " + idReclamo);
-        }
+    public List<SeguimientoResponseDTO> listarPorReclamo(Long idReclamo, UsuarioPrincipal usuario) {
+        Reclamo reclamo = reclamoRepository.findById(idReclamo)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reclamo no encontrado con id: " + idReclamo));
+        acceso.verificarLectura(reclamo, usuario);
         return repository.findByReclamoIdReclamoOrderByFechaHoraAsc(idReclamo)
                 .stream().map(this::toResponse).toList();
     }
 
     @Override
     @Transactional
-    public SeguimientoResponseDTO crear(SeguimientoRequestDTO dto) {
+    public SeguimientoResponseDTO crear(SeguimientoRequestDTO dto, UsuarioPrincipal principal) {
         String estado = dto.estado().toUpperCase();
         if (!ESTADOS_VALIDOS.contains(estado)) {
             throw new SolicitudInvalidaException("Estado no permitido. Valores válidos: " + ESTADOS_VALIDOS);
@@ -59,8 +64,15 @@ public class SeguimientoServiImpl implements SeguimientoService {
 
         Reclamo reclamo = reclamoRepository.findById(dto.idReclamo())
                 .orElseThrow(() -> new RecursoNoEncontradoException("Reclamo no encontrado con id: " + dto.idReclamo()));
-        Usuario usuario = usuarioRepository.findById(dto.idUsuario())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado con id: " + dto.idUsuario()));
+        acceso.verificarGestion(reclamo, principal);
+
+        if ("CERRADO".equals(reclamo.getEstado())) {
+            throw new SolicitudInvalidaException("No se pueden registrar acciones en un reclamo cerrado");
+        }
+
+        // El responsable es el usuario del token, no el que diga el body
+        Usuario usuario = usuarioRepository.findById(principal.getIdUsuario())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
 
         Seguimiento seguimiento = new Seguimiento();
         seguimiento.setReclamo(reclamo);
@@ -71,8 +83,10 @@ public class SeguimientoServiImpl implements SeguimientoService {
         seguimiento.setRespuesta(dto.respuesta());
         seguimiento.setAccionRealizada(dto.accionRealizada());
 
-        // El reclamo ya está gestionado por la transacción: el cambio se guarda solo
         reclamo.setEstado(estado);
+        if (reclamo.getUsuarioAsignado() == null && !acceso.esAdmin(principal)) {
+            reclamo.setUsuarioAsignado(usuario);
+        }
 
         return toResponse(repository.save(seguimiento));
     }

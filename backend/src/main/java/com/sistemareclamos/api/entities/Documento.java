@@ -34,4 +34,10 @@ public class Documento {
 
     @Column(length = 255)
     private String descripcion;
+
+    @Column(name = "origen", length = 20)
+    private String origen;      // EVIDENCIA o RESPUESTA (la respuesta la usará Jasper)
+
+    @Column(name = "tamanio")
+    private Long tamanio;
 }

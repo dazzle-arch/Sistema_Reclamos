@@ -17,8 +17,6 @@ import { UsuarioResponse } from '../../../core/models/usuarioResponse.model';
   templateUrl: './derivar-caso.html',
 })
 export class DerivarCaso implements OnInit {
-  // Temporal: cuando haya login, sale del token
-  private readonly ID_USUARIO_DERIVA = 1;
 
   idReclamo = 0;
   reclamo = signal<ReclamoResponse | null>(null);
@@ -76,14 +74,8 @@ export class DerivarCaso implements OnInit {
     this.reclamoService.derivar(this.idReclamo, {
       idArea: this.idAreaSeleccionada,
       idUsuarioAsignado: this.idFuncionarioSeleccionado,
-      idUsuarioDeriva: this.ID_USUARIO_DERIVA,
       observacion: this.observacion.trim() || null
     }).subscribe({
-      next: () => this.router.navigate(['/admin/detalle-reclamo', this.idReclamo]),
-      error: (err) => {
-        this.error.set(err.error?.mensaje ?? 'No se pudo derivar el reclamo');
-        this.enviando.set(false);
-      }
     });
   }
 }

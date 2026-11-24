@@ -116,7 +116,7 @@
                             <small class="text-danger">Requerido.</small>
                         }
                         @if (formularioReclamo.get('descripcion')?.errors?.['minlength'] && formularioReclamo.get('descripcion')?.touched) {
-                            <small class="text-danger">Maximo 500 caracteres</small>
+                            <small class="text-danger">Mínimo 10 caracteres</small>
                         }
                     </div>
                 </div>
@@ -124,8 +124,11 @@
                 <div class="row mb-3 align-items-center">
                     <label class="col-3 text-end fw-bold">EVIDENCIA</label>
                     <div class="col-9">
-                        <input type="file" class="form-control">
-                        <div class="form-text">Adjuntar evidencia (opcional)</div>
+                        <input type="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png" (change)="alElegirArchivo($event)">
+                            <div class="form-text">Adjuntar evidencia (opcional). PDF, JPG o PNG, máximo 5 MB.</div>
+                            @if (errorArchivo()) {
+                                <small class="text-danger">{{ errorArchivo() }}</small>
+                            }
                     </div>
                 </div>
                 @if (mensajeError()) {
@@ -182,8 +185,9 @@
                 <button type="button"
                         class="btn btn-outline-danger btn-sm fw-bold mb-4 px-3"
                         (click)="copiarCodigo()">
-                    <i class="bi" [class.bi-clipboard-check]="copiado()" [class.bi-clipboard]="!copiado()"></i>
-                    {{ copiado() ? '¡Código copiado!' : 'Copiar código' }}
+                            @if (avisoEvidencia()) {
+                                <div class="alert alert-warning small">{{ avisoEvidencia() }}</div>
+                            }
                 </button>
 
                 <div>

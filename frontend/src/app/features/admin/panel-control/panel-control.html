@@ -3,20 +3,34 @@
 
         <app-sidebar-admin></app-sidebar-admin>
         <app-campana-notificaciones></app-campana-notificaciones>
-        
-        <div class="content flex-grow-1 p-4">
-            <div class="row">
 
+        <div class="content flex-grow-1 p-4">
+            @if (cargando()) {
+                <p class="text-muted">Cargando panel...</p>
+            }
+            @if (error()) {
+                <div class="alert alert-danger">{{ error() }}</div>
+            }
+
+            <div class="row">
                 <div class="col-4">
                     <div class="border rounded p-3 h-100">
-                        <h6 class="fw-bold mb-3">Resumen semanal</h6>
-                        <ul class="list-unstyled small">
-                            <li class="mb-2"><span class="fw-bold">12</span> reclamos nuevos</li>
-                            <li class="mb-2"><span class="fw-bold">7</span> derivados</li>
-                            <li class="mb-2"><span class="fw-bold">5</span> atendidos</li>
-                            <li class="mb-2"><span class="fw-bold">3</span> cerrados esta semana</li>
-                            <li><span class="fw-bold text-danger">2</span> fuera de plazo</li>
+                        <h6 class="fw-bold mb-3">Resumen de los últimos 7 días</h6>
+                        @if (resumen(); as r) {
+                        <ul class="list-unstyled small mb-3">
+                            <li class="mb-2"><span class="fw-bold">{{ r.semana.nuevos }}</span> reclamos nuevos</li>
+                            <li class="mb-2"><span class="fw-bold">{{ r.semana.enProceso }}</span> puestos en proceso</li>
+                            <li class="mb-2"><span class="fw-bold">{{ r.semana.resueltos }}</span> resueltos</li>
+                            <li class="mb-2"><span class="fw-bold">{{ r.semana.cerrados }}</span> cerrados</li>
+                            <li><span class="fw-bold text-danger">{{ r.semana.fueraDePlazo }}</span> abiertos fuera de plazo</li>
                         </ul>
+                        <hr>
+                        <ul class="list-unstyled small mb-0">
+                            <li class="mb-2"><span class="fw-bold">{{ r.total }}</span> reclamos en total</li>
+                            <li class="mb-2"><span class="fw-bold text-warning">{{ r.sinAsignar }}</span> sin asignar</li>
+                            <li><span class="fw-bold text-danger">{{ r.muyAltaAbiertos }}</span> de prioridad muy alta abiertos</li>
+                        </ul>
+                        }
                     </div>
                 </div>
 
@@ -38,7 +52,10 @@
                 </div>
 
                 <div class="col-6">
-                    <p class="small text-center fw-bold mb-1">Cumplimiento de plazos</p>
+                    <p class="small text-center fw-bold mb-1">Cumplimiento de plazos (casos cerrados)</p>
+                    @if (sinCerrados()) {
+                        <p class="small text-center text-muted">Aún no hay casos cerrados con historial.</p>
+                    }
                     <canvas id="doughnutChart"></canvas>
                 </div>
             </div>

@@ -50,8 +50,7 @@ export class Login {
       },
       error: (err) => {
         this.cargando = false;
-        this.errorMensaje = 'Credenciales incorrectas. Intente nuevamente.';
-        console.error('Error de login', err);
+        this.errorMensaje = err.error?.mensaje ?? 'No se pudo iniciar sesión. Intente nuevamente.';
       }
     });
   }

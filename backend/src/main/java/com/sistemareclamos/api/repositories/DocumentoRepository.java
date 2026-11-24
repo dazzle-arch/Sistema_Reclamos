@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface DocumentoRepository extends JpaRepository<Documento, Long> {
     List<Documento> findByReclamoIdReclamo(Long idReclamo);
+    boolean existsByReclamoIdReclamoAndOrigen(Long idReclamo, String origen);
 }

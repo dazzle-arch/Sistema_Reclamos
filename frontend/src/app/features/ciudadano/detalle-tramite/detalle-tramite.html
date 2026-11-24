@@ -1,51 +1,57 @@
 <main class="detalle-container d-flex justify-content-center align-items-center py-5">
+    @if (consulta.resultado(); as r) {
     <div class="card shadow-sm p-4" style="width: 1200px;">
-        <h2 class="text-danger fw-bold mb-4">Verificacion de Estado de Tramite</h2>
+        <h2 class="text-danger fw-bold mb-4">Verificación de Estado de Trámite N° {{ r.codigo }}</h2>
 
         <div class="row mb-3 align-items-center">
-            <label class="col-4 fw-bold">Departamento Destino</label>
-            <div class="col-8">
-                <!-- 1. Usamos [value] para enlazar el dato y TitleCasePipe para las mayúsculas iniciales -->
-                <input type="text" class="form-control" readonly [value]="datosCrudos.departamento | titlecase">
-            </div>
+            <label class="col-4 fw-bold">Asunto</label>
+            <div class="col-8"><input type="text" class="form-control" readonly [value]="r.asunto"></div>
+        </div>
+
+        <div class="row mb-3 align-items-center">
+            <label class="col-4 fw-bold">Categoría</label>
+            <div class="col-8"><input type="text" class="form-control" readonly [value]="r.categoria"></div>
+        </div>
+
+        <div class="row mb-3 align-items-center">
+            <label class="col-4 fw-bold">Área actual</label>
+            <div class="col-8"><input type="text" class="form-control" readonly [value]="r.area ?? 'Sin asignar'"></div>
         </div>
 
         <div class="row mb-4 align-items-center">
-            <label class="col-3 fw-bold">Fecha de registro</label>
+            <label class="col-4 fw-bold">Fecha de registro</label>
             <div class="col-3">
-                <!-- 2. DatePipe transforma la fecha fea en dd/MM/yyyy -->
-                <input type="text" class="form-control" readonly [value]="datosCrudos.fechaApertura | date:'dd/MM/yyyy'">
+                <input type="text" class="form-control" readonly [value]="r.fechaRegistro | date:'dd/MM/yyyy'">
             </div>
-            <label class="col-3 fw-bold">Tiempo estimado de culminacion</label>
-            <div class="col-3">
-                <!-- Usamos el mismo DatePipe para la fecha estimada -->
-                <input type="text" class="form-control" readonly [value]="datosCrudos.fechaEstimada | date:'dd/MM/yyyy'">
-            </div>
-        </div>  
-        
+            <label class="col-2 fw-bold">Estado</label>
+            <div class="col-3"><input type="text" class="form-control" readonly [value]="r.estado"></div>
+        </div>
+
         <table class="table table-bordered text-center my-4">
             <thead>
                 <tr>
-                    <th>Fecha y Hora</th>
-                    <th>Accion Realizada</th>
+                    <th>Fecha y hora</th>
+                    <th>Estado</th>
+                    <th>Respuesta</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- 3. Bucle @for para recorrer el historial automáticamente -->
-                @for (item of historial; track item.fecha) {
-                    <tr>
-                        <!-- Formato de fecha que incluye la hora (ej. 24/09/2026 10:00 AM) -->
-                        <td class="fw-bold">{{ item.fecha | date:'dd/MM/yyyy hh:mm a' }}</td>
-                        <!-- UpperCasePipe para convertir toda la acción a MAYÚSCULAS -->
-                        <td>{{ item.accion | uppercase }}</td>
-                    </tr>
+                @for (m of r.historial; track m.fecha) {
+                <tr>
+                    <td class="fw-bold">{{ m.fecha | date:'dd/MM/yyyy hh:mm a' }}</td>
+                    <td>{{ m.estado }}</td>
+                    <td>{{ m.respuesta || '—' }}</td>
+                </tr>
+                } @empty {
+                <tr><td colspan="3" class="text-muted">Aún no hay movimientos registrados.</td></tr>
                 }
             </tbody>
         </table>
 
         <div class="d-flex justify-content-between mt-4">
-            <button class="btn btn-danger fw-bold">Descargar Documento de respuesta oficial</button>
+            <a routerLink="/consultar-estado" class="btn btn-outline-secondary fw-bold">Nueva consulta</a>
             <a routerLink="/home" class="btn btn-danger fw-bold">Volver al inicio</a>
         </div>
     </div>
+    }
 </main>

@@ -6,7 +6,7 @@
         <app-campana-notificaciones></app-campana-notificaciones>
 
         <div class="content flex-grow-1 p-4">
-            <h4 class="fw-bold mb-4">Mis casos asignados</h4>
+            <h4 class="fw-bold mb-4">Casos de mi área</h4>
 
             <table class="table table-bordered text-center table-hover align-middle">
                 <thead>
@@ -33,13 +33,16 @@
                         <td>{{ reclamo.nombreCategoria }}</td>
 
                         <td>
-                            <!-- Mostramos el estado real del reclamo -->
-                            <span class="badge bg-warning text-dark">{{ reclamo.estado }}</span>
+                            <span class="badge" [class]="'badge ' + claseEstado(reclamo.estado)">{{ reclamo.estado }}</span>
                         </td>
 
                         <td>
-                            <!-- El botón ahora genera la ruta dinámica: /funcionario/atender-caso/5 -->
-                            <a [routerLink]="['/funcionario/atender-caso', reclamo.idReclamo]" class="btn btn-sm btn-danger">Atender</a>
+                            @if (puedeAtender(reclamo)) {
+                                <a [routerLink]="['/funcionario/atender-caso', reclamo.idReclamo]" class="btn btn-sm btn-danger">Atender</a>
+                            } @else {
+                                <a [routerLink]="['/funcionario/atender-caso', reclamo.idReclamo]" class="btn btn-sm btn-outline-secondary"
+                                [title]="'Asignado a ' + reclamo.nombreUsuarioAsignado">Ver</a>
+                            }
                         </td>
                     </tr>
                     } @empty {

@@ -8,5 +8,7 @@ public record DocumentoResponseDTO(
         String tipoArchivo,
         String descripcion,
         LocalDateTime fechaCarga,
-        Long idReclamo
+        Long idReclamo,
+        String origen,
+        Long tamanio
 ) {}

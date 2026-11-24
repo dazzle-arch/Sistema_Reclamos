@@ -5,50 +5,62 @@
             <h2 class="text-danger fw-bold m-0">Estado del Reclamo</h2>
         </div>
 
-        <div class="card-body p-4">
+        <form class="card-body p-4" [formGroup]="form" (ngSubmit)="consultar()">
             <div class="mb-4">
                 <label class="fw-bold mb-2">Ingrese el código del trámite</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" formControlName="codigo">
+                @if (form.get('codigo')?.invalid && form.get('codigo')?.touched) {
+                    <small class="text-danger">Ingrese un código numérico</small>
+                }
             </div>
 
-            <div class="mb-5">
+            <div class="mb-4">
                 <label class="fw-bold mb-2">Ingrese DNI</label>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" formControlName="dni" maxlength="8">
+                @if (form.get('dni')?.invalid && form.get('dni')?.touched) {
+                    <small class="text-danger">El DNI debe tener 8 números</small>
+                }
             </div>
 
+            @if (error()) {
+                <div class="alert alert-danger text-center fw-bold">{{ error() }}</div>
+            }
+
+            <div class="text-center mb-4">
+                <button type="submit" class="btn btn-danger px-5 fw-bold" [disabled]="buscando()">
+                    {{ buscando() ? 'Consultando...' : 'Consultar' }}
+                </button>
+            </div>
+
+            @if (resultado(); as r) {
             <div class="estado-tramite text-center my-5">
-                <h4 class="fw-bold mb-4">Estado del trámite</h4>
+                <h4 class="fw-bold mb-1">Estado del trámite N° {{ r.codigo }}</h4>
+                <p class="text-muted mb-4">{{ r.asunto }}</p>
 
                 <div class="progress-steps">
                     <div class="step-labels d-flex justify-content-between mb-2">
-                        <span class="fw-bold">Registrado</span>
-                        <span class="fw-bold">Derivado</span>
-                        <span class="fw-bold">Atendido</span>
-                        <span class="fw-bold">Cerrado</span>
+                        @for (p of pasos; track p; let i = $index) {
+                            <span class="fw-bold" [class.text-danger]="i + 1 <= pasoActual">{{ p }}</span>
+                        }
                     </div>
 
                     <div class="progress-track d-flex">
-                        <div class="segment bg-danger"></div>
-                        <div class="segment bg-warning"></div>
-                        <div class="segment bg-warning-subtle"></div>
-                        <div class="segment bg-success"></div>
-                    </div>
-
-                    <div class="dots d-flex justify-content-between">
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                        <span class="dot"></span>
-                        <span class="dot"></span>
+                        @for (p of pasos; track p; let i = $index) {
+                            <div class="segment" [class.bg-danger]="i + 1 <= pasoActual"
+                                [class.bg-secondary-subtle]="i + 1 > pasoActual"></div>
+                        }
                     </div>
                 </div>
+
+                <button type="button" class="btn btn-outline-dark px-4 py-2 mt-4" (click)="verDetalle()">
+                    Detalles
+                </button>
             </div>
+            }
 
             <div class="text-center">
-                <a routerLink="/detalle-tramite" class="btn btn-outline-dark px-4 py-2">
-                    Detalles
-                </a>
+                <a routerLink="/home" class="btn btn-outline-secondary px-4">Volver al inicio</a>
             </div>
-        </div>
+        </form>
     </div>
 </main>

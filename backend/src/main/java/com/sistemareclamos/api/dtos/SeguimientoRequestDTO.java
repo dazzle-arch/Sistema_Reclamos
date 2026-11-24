@@ -7,9 +7,6 @@ public record SeguimientoRequestDTO(
         @NotNull(message = "El reclamo es obligatorio")
         Long idReclamo,
 
-        @NotNull(message = "El usuario es obligatorio")
-        Long idUsuario,
-
         @NotBlank(message = "El estado es obligatorio")
         @Pattern(regexp = "REGISTRADO|EN_PROCESO|RESUELTO|CERRADO", message = "Estado no válido")
         String estado,

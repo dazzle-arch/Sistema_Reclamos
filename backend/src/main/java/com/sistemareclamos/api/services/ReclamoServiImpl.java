@@ -1,13 +1,11 @@
 package com.sistemareclamos.api.services;
-import com.sistemareclamos.api.dtos.AtencionRequestDTO;
-import com.sistemareclamos.api.dtos.DerivarRequestDTO;
-import com.sistemareclamos.api.dtos.ReclamoRequestDTO;
-import com.sistemareclamos.api.dtos.ReclamoResponseDTO;
-import com.sistemareclamos.api.dtos.SeguimientoResponseDTO;
+import com.sistemareclamos.api.dtos.*;
 import com.sistemareclamos.api.entities.*;
 import com.sistemareclamos.api.exception.RecursoNoEncontradoException;
 import com.sistemareclamos.api.exception.SolicitudInvalidaException;
 import com.sistemareclamos.api.repositories.*;
+import com.sistemareclamos.api.security.AccesoReclamo;
+import com.sistemareclamos.api.security.UsuarioPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +20,8 @@ public class ReclamoServiImpl implements ReclamoService {
 
     private static final List<String> ESTADOS_VALIDOS =
             List.of("REGISTRADO", "EN_PROCESO", "RESUELTO", "CERRADO");
+    private static final List<String> PRIORIDADES_VALIDAS = List.of("ALTA", "MEDIA", "BAJA");
+    private static final String ROL_ADMIN = "Administrador";
 
     private final ReclamoRepository repository;
     private final CiudadanoRepository ciudadanoRepository;
@@ -30,6 +30,7 @@ public class ReclamoServiImpl implements ReclamoService {
     private final UsuarioRepository usuarioRepository;
     private final SeguimientoRepository seguimientoRepository;
     private final NotificacionRepository notificacionRepository;
+    private final AccesoReclamo acceso;
 
     @Override
     public List<ReclamoResponseDTO> listar() {
@@ -37,13 +38,15 @@ public class ReclamoServiImpl implements ReclamoService {
     }
 
     @Override
-    public ReclamoResponseDTO obtenerPorId(Long id) {
-        return toResponse(buscar(id));
+    public ReclamoResponseDTO obtenerPorId(Long id, UsuarioPrincipal usuario) {
+        Reclamo reclamo = buscar(id);
+        acceso.verificarLectura(reclamo, usuario);
+        return toResponse(reclamo);
     }
 
     @Override
     @Transactional
-    public ReclamoResponseDTO crear(ReclamoRequestDTO dto) {
+    public ReclamoCreadoDTO crear(ReclamoRequestDTO dto) {
         Categoria categoria = categoriaRepository.findById(dto.tipoReclamo())
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Categoría no encontrada con id: " + dto.tipoReclamo()));
@@ -54,7 +57,7 @@ public class ReclamoServiImpl implements ReclamoService {
         Area areaInicial = areaRepository.findById(1L)
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Área inicial (Atención al Ciudadano) no encontrada"));
-    
+
         Reclamo reclamo = new Reclamo();
         reclamo.setCiudadano(ciudadano);
         reclamo.setCategoria(categoria);
@@ -65,33 +68,34 @@ public class ReclamoServiImpl implements ReclamoService {
         reclamo.setPrioridad("MEDIA");
         reclamo.setFechaRegistro(LocalDateTime.now());
 
-        return toResponse(repository.save(reclamo));
+        Reclamo guardado = repository.save(reclamo);
+        return new ReclamoCreadoDTO(guardado.getIdReclamo(), guardado.getEstado(), guardado.getFechaRegistro());
     }
 
     @Override
     @Transactional
-    public ReclamoResponseDTO actualizarEstado(Long id, String nuevoEstado) {
-        if (nuevoEstado == null || !ESTADOS_VALIDOS.contains(nuevoEstado.toUpperCase())) {
-            throw new SolicitudInvalidaException("Estado no permitido. Valores válidos: " + ESTADOS_VALIDOS);
-        }
+    public ReclamoResponseDTO actualizarEstado(Long id, String nuevoEstado, UsuarioPrincipal usuario) {
+        String estado = validarEstado(nuevoEstado);
         Reclamo reclamo = buscar(id);
-        reclamo.setEstado(nuevoEstado.toUpperCase());
+        acceso.verificarGestion(reclamo, usuario);
+        if ("CERRADO".equals(reclamo.getEstado())) {
+            throw new SolicitudInvalidaException("El reclamo ya está cerrado");
+        }
+        reclamo.setEstado(estado);
 
+        if ("CERRADO".equals(estado)) {
+            Usuario quien = usuarioRepository.findById(usuario.getIdUsuario())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
+            notificarAdmins(reclamo, "Caso cerrado",
+                    "El reclamo N° " + reclamo.getIdReclamo() + " fue cerrado por " + quien.getNombres(),
+                    quien.getIdUsuario());
+        }
         return toResponse(repository.save(reclamo));
     }
 
     @Override
-    public List<ReclamoResponseDTO> listarPorFuncionario(Long idUsuario) {
-        if (!usuarioRepository.existsById(idUsuario)) {
-            throw new RecursoNoEncontradoException("Usuario no encontrado con id: " + idUsuario);
-        }
-        return repository.findByUsuarioAsignadoIdUsuario(idUsuario)
-                .stream().map(this::toResponse).toList();
-    }
-
-    @Override
     @Transactional
-    public ReclamoResponseDTO derivar(Long id, DerivarRequestDTO dto) {
+    public ReclamoResponseDTO derivar(Long id, DerivarRequestDTO dto, UsuarioPrincipal usuario) {
         Reclamo reclamo = buscar(id);
         if ("CERRADO".equals(reclamo.getEstado())) {
             throw new SolicitudInvalidaException("No se puede derivar un reclamo cerrado");
@@ -102,9 +106,9 @@ public class ReclamoServiImpl implements ReclamoService {
         Usuario funcionario = usuarioRepository.findById(dto.idUsuarioAsignado())
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Usuario no encontrado con id: " + dto.idUsuarioAsignado()));
-        Usuario quienDeriva = usuarioRepository.findById(dto.idUsuarioDeriva())
-                .orElseThrow(() -> new RecursoNoEncontradoException(
-                        "Usuario no encontrado con id: " + dto.idUsuarioDeriva()));
+        // Quien deriva sale del token, no del body
+        Usuario quienDeriva = usuarioRepository.findById(usuario.getIdUsuario())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
 
         if (!Boolean.TRUE.equals(funcionario.getEstado())) {
             throw new SolicitudInvalidaException("El funcionario está inactivo");
@@ -139,71 +143,142 @@ public class ReclamoServiImpl implements ReclamoService {
 
     @Override
     @Transactional
-    public ReclamoResponseDTO registrarAtencion(Long idReclamo, AtencionRequestDTO dto,
-            String nombreUsuarioFuncionario) {
-        
-        // 1. Buscar el reclamo y el funcionario
-        Reclamo reclamo = repository.findById(idReclamo)
-                .orElseThrow(() -> new RuntimeException("Reclamo no encontrado"));
+    public ReclamoResponseDTO registrarAtencion(Long id, AtencionRequestDTO dto, UsuarioPrincipal usuario) {
+        Reclamo reclamo = buscar(id);
+        acceso.verificarGestion(reclamo, usuario);
 
-        Usuario funcionario = usuarioRepository.findByNombreUsuario(nombreUsuarioFuncionario)
-                .orElseThrow(() -> new RuntimeException("Funcionario no encontrado"));
         if ("CERRADO".equalsIgnoreCase(reclamo.getEstado())) {
-            throw new IllegalStateException("No se pueden registrar atenciones en un reclamo cerrado.");
+            throw new SolicitudInvalidaException("No se pueden registrar atenciones en un reclamo cerrado");
         }
-        // 2. Crear el registro de trazabilidad usando Seguimiento
+
+        Usuario funcionario = usuarioRepository.findById(usuario.getIdUsuario())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
+
+        String estadoFinal = validarEstado(dto.nuevoEstado());
+
+        String prioridad = null;
+        if (dto.nuevaPrioridad() != null && !dto.nuevaPrioridad().isBlank()) {
+            prioridad = dto.nuevaPrioridad().toUpperCase();
+            if (!PRIORIDADES_VALIDAS.contains(prioridad)) {
+                throw new SolicitudInvalidaException("Prioridad no permitida. Valores válidos: " + PRIORIDADES_VALIDAS);
+            }
+        }
+
+        Area areaDestino = null;
+        if (dto.idAreaDerivada() != null) {
+            if ("CERRADO".equals(estadoFinal)) {
+                throw new SolicitudInvalidaException("No se puede derivar un reclamo que se está cerrando");
+            }
+            areaDestino = areaRepository.findById(dto.idAreaDerivada())
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
+                            "Área no encontrada con id: " + dto.idAreaDerivada()));
+        }
+
         Seguimiento seguimiento = new Seguimiento();
+        seguimiento.setReclamo(reclamo);
+        seguimiento.setUsuario(funcionario);
+        seguimiento.setFechaHora(LocalDateTime.now());
+        seguimiento.setEstado(estadoFinal);
         seguimiento.setAccionRealizada(dto.accionRealizada());
         seguimiento.setObservacion(dto.observacion());
         seguimiento.setRespuesta(dto.respuestaCiudadano());
-
-        // Seguimiento requiere que le pasemos el estado y la fecha obligatoriamente
-        String estadoFinal = (dto.nuevoEstado() != null && !dto.nuevoEstado().isBlank())
-                ? dto.nuevoEstado().toUpperCase()
-                : reclamo.getEstado();
-
-        seguimiento.setEstado(estadoFinal);
-        seguimiento.setFechaHora(LocalDateTime.now());
-        seguimiento.setReclamo(reclamo);
-        seguimiento.setUsuario(funcionario);
-
-        // Guardamos en la base de datos real
         seguimientoRepository.save(seguimiento);
 
-        // 3. Actualizar el estado del Reclamo principal
         reclamo.setEstado(estadoFinal);
-        if (dto.nuevaPrioridad() != null && !dto.nuevaPrioridad().isBlank()) {
-            reclamo.setPrioridad(dto.nuevaPrioridad().toUpperCase());
+        if (prioridad != null) {
+            reclamo.setPrioridad(prioridad);
         }
 
-        // 4. (Opcional) Si se deriva a otra área
-        if (dto.idAreaDerivada() != null) {
-            Area area = areaRepository.findById(dto.idAreaDerivada())
-                    .orElseThrow(() -> new RuntimeException("Área no encontrada"));
-            reclamo.setArea(area);
+        // Quien toma un caso sin asignar queda como responsable (el admin no)
+        if (reclamo.getUsuarioAsignado() == null && !acceso.esAdmin(usuario)) {
+            reclamo.setUsuarioAsignado(funcionario);
+        }
+
+        // Derivación a otra área: queda en la cola del área, sin asignado
+        if (areaDestino != null) {
+            reclamo.setArea(areaDestino);
             reclamo.setUsuarioAsignado(null);
+
+            for (Usuario destino : usuarioRepository.findByAreaIdAreaAndEstadoTrue(areaDestino.getIdArea())) {
+                if (destino.getIdUsuario().equals(funcionario.getIdUsuario())) continue;
+                if (ROL_ADMIN.equals(destino.getRol().getNombre())) continue; // el admin se avisa aparte
+                Notificacion n = new Notificacion();
+                n.setReclamo(reclamo);
+                n.setUsuarioDestino(destino);
+                n.setAsunto("Nuevo caso en tu área");
+                n.setMensaje("Se derivó a " + areaDestino.getNombre() + " el reclamo N° "
+                        + reclamo.getIdReclamo() + ": " + reclamo.getAsunto());
+                n.setFechaEnvio(LocalDateTime.now());
+                notificacionRepository.save(n);
+            }
+
+            notificarAdmins(reclamo, "Caso derivado",
+                    funcionario.getNombres() + " derivó el reclamo N° " + reclamo.getIdReclamo()
+                            + " a " + areaDestino.getNombre(),
+                    funcionario.getIdUsuario());
         }
 
-        Reclamo reclamoActualizado = repository.save(reclamo);
-        return toResponse(reclamoActualizado);
+        if ("CERRADO".equals(estadoFinal)) {
+            notificarAdmins(reclamo, "Caso cerrado",
+                    "El reclamo N° " + reclamo.getIdReclamo() + " fue cerrado por " + funcionario.getNombres(),
+                    funcionario.getIdUsuario());
+        }
+        return toResponse(repository.save(reclamo));
+
     }
 
     @Override
-    public List<ReclamoResponseDTO> listarMisCasos(String nombreUsuario) {
-        // 1. Buscamos al usuario real en la base de datos usando el nombre que venía en
-        // el token
-        Usuario usuario = usuarioRepository.findByNombreUsuario(nombreUsuario)
-                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado: " + nombreUsuario));
-
-        // 2. Buscamos sus reclamos usando su ID real y el area correspondiente
-        if (usuario.getArea() == null) {
+    public List<ReclamoResponseDTO> listarMisCasos(UsuarioPrincipal usuario) {
+        Usuario u = usuarioRepository.findById(usuario.getIdUsuario())
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
+        if (u.getArea() == null) {
             return List.of();
         }
+        return repository.findByAreaIdArea(u.getArea().getIdArea())
+                .stream().map(this::toResponse).toList();
+    }
 
-        return repository.findByAreaIdArea(usuario.getArea().getIdArea())
+    @Override
+    public ConsultaPublicaDTO consultar(Long codigo, String dni) {
+        // Mismo mensaje si falla el código o el DNI: no se revela cuál de los dos existe
+        Reclamo r = repository.findByIdReclamoAndCiudadanoDni(codigo, dni.trim())
+                .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró un reclamo con esos datos"));
+
+        List<MovimientoPublicoDTO> historial = seguimientoRepository
+                .findByReclamoIdReclamoOrderByFechaHoraAsc(r.getIdReclamo())
                 .stream()
-                .map(this::toResponse)
+                .map(s -> new MovimientoPublicoDTO(s.getFechaHora(), s.getEstado(), s.getRespuesta()))
                 .toList();
+
+        return new ConsultaPublicaDTO(
+                r.getIdReclamo(),
+                r.getAsunto(),
+                r.getCategoria().getNombre(),
+                r.getArea() != null ? r.getArea().getNombre() : null,
+                r.getEstado(),
+                r.getFechaRegistro(),
+                historial
+        );
+    }
+
+    private String validarEstado(String estado) {
+        if (estado == null || !ESTADOS_VALIDOS.contains(estado.toUpperCase())) {
+            throw new SolicitudInvalidaException("Estado no permitido. Valores válidos: " + ESTADOS_VALIDOS);
+        }
+        return estado.toUpperCase();
+    }
+
+    private void notificarAdmins(Reclamo reclamo, String asunto, String mensaje, Long excluirId) {
+        for (Usuario admin : usuarioRepository.findByRolNombreAndEstadoTrue(ROL_ADMIN)) {
+            if (admin.getIdUsuario().equals(excluirId)) continue;
+            Notificacion n = new Notificacion();
+            n.setReclamo(reclamo);
+            n.setUsuarioDestino(admin);
+            n.setAsunto(asunto);
+            n.setMensaje(mensaje);
+            n.setFechaEnvio(LocalDateTime.now());
+            notificacionRepository.save(n);
+        }
     }
 
     private Reclamo buscar(Long id) {
@@ -221,32 +296,29 @@ public class ReclamoServiImpl implements ReclamoService {
         ciudadano.setSexo(dto.sexo());
         return ciudadanoRepository.save(ciudadano);
     }
-    
 
     private ReclamoResponseDTO toResponse(Reclamo r) {
-        // 1. Buscamos el historial de este reclamo
-        List<Seguimiento> seguimientos = seguimientoRepository.findByReclamoIdReclamo(r.getIdReclamo());
-        
-        // 2. Convertimos el historial a DTOs
-        List<SeguimientoResponseDTO> historialDTO = seguimientos.stream()
-            .map(s -> new SeguimientoResponseDTO(
-                s.getIdSeguimiento(),
-                s.getFechaHora(),
-                s.getEstado(),
-                s.getObservacion(),
-                s.getRespuesta(),
-                s.getAccionRealizada(),
-                s.getReclamo().getIdReclamo(),
-                s.getUsuario().getIdUsuario(),
-                s.getUsuario().getNombres()
-            )).toList();
+        List<SeguimientoResponseDTO> historialDTO = seguimientoRepository
+                .findByReclamoIdReclamo(r.getIdReclamo()).stream()
+                .map(s -> new SeguimientoResponseDTO(
+                        s.getIdSeguimiento(),
+                        s.getFechaHora(),
+                        s.getEstado(),
+                        s.getObservacion(),
+                        s.getRespuesta(),
+                        s.getAccionRealizada(),
+                        s.getReclamo().getIdReclamo(),
+                        s.getUsuario().getIdUsuario(),
+                        s.getUsuario().getNombres()
+                )).toList();
 
-        // 3. Devolvemos el Reclamo con su historial adjunto
         return new ReclamoResponseDTO(
                 r.getIdReclamo(),
                 r.getCiudadano().getIdCiudadano(),
                 r.getCiudadano().getNombres() + " " + r.getCiudadano().getApellidos(),
                 r.getCiudadano().getDni(),
+                r.getCiudadano().getTelefono(),
+                r.getCiudadano().getCorreo(),
                 r.getCategoria().getIdCategoria(),
                 r.getCategoria().getNombre(),
                 r.getArea() != null ? r.getArea().getIdArea() : null,
@@ -258,7 +330,7 @@ public class ReclamoServiImpl implements ReclamoService {
                 r.getEstado(),
                 r.getPrioridad(),
                 r.getFechaRegistro(),
-                historialDTO // Pasamos la lista aquí
+                historialDTO
         );
     }
 }

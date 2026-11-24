@@ -1,8 +1,8 @@
 export interface AtencionRequest {
     nuevoEstado: string;
     accionRealizada: string;
-    observacion: string;
-    respuestaCiudadano: string;
-    idAreaDerivada?: number; 
+    observacion?: string | null;
+    respuestaCiudadano?: string | null;
+    idAreaDerivada?: number | null;
     nuevaPrioridad?: string | null;
 }

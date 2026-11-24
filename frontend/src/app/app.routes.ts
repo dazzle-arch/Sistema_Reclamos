@@ -16,26 +16,31 @@ import { FormularioUsuario } from './features/admin/formulario-usuario/formulari
 import { Notificaciones } from './features/admin/notificaciones/notificaciones';
 import { Catalogos } from './features/admin/catalogos/catalogos'
 import { CasosAtendidos } from './features/funcionario/casos-atendidos/casos-atendidos';
+import { authGuard, rolGuard } from './core/guards/rol.guard';
 
 export const routes: Routes = [
+
     {path: '', component: Home},
     {path: 'home', component: Home},
     {path: 'login', component: Login},
     {path: 'registrar', component: Registrar},
     {path: 'consultar-estado', component: ConsultarEstado},
     {path: 'detalle-tramite', component: DetalleTramite},
-    {path: 'admin/panel-control', component: PanelControl},
-    {path: 'admin/bandeja-casos', component: BandejaCasos},
-    {path: 'admin/reportes', component: Reportes},
-    {path: 'admin/usuarios', component: Usuarios},
-    {path: 'funcionario/bandeja-casos', component: BandejaCasosFuncionario},
-    {path: 'funcionario/atender-caso/:id', component: AtenderCaso},
-    {path: 'admin/detalle-reclamo/:id', component: DetalleReclamo},
-    {path: 'admin/derivar-caso/:id', component: DerivarCaso},
-    {path: 'admin/formulario-usuario', component: FormularioUsuario},
-    {path: 'admin/formulario-usuario/:id', component: FormularioUsuario },
-    {path: 'notificaciones', component: Notificaciones},
-    {path: 'admin/catalogos', component: Catalogos},
-    {path: 'funcionario/casos-atendidos', component: CasosAtendidos}
 
+    {path: 'admin/panel-control', component: PanelControl, canActivate: [rolGuard(1)]},
+    {path: 'admin/bandeja-casos', component: BandejaCasos, canActivate: [rolGuard(1)]},
+    {path: 'admin/reportes', component: Reportes, canActivate: [rolGuard(1)]},
+    {path: 'admin/usuarios', component: Usuarios, canActivate: [rolGuard(1)]},
+    {path: 'admin/detalle-reclamo/:id', component: DetalleReclamo, canActivate: [rolGuard(1)]},
+    {path: 'admin/derivar-caso/:id', component: DerivarCaso, canActivate: [rolGuard(1)]},
+    {path: 'admin/formulario-usuario', component: FormularioUsuario, canActivate: [rolGuard(1)]},
+    {path: 'admin/formulario-usuario/:id', component: FormularioUsuario, canActivate: [rolGuard(1)]},
+    {path: 'admin/catalogos', component: Catalogos, canActivate: [rolGuard(1)]},
+
+    {path: 'funcionario/bandeja-casos', component: BandejaCasosFuncionario, canActivate: [rolGuard(2)]},
+    {path: 'funcionario/atender-caso/:id', component: AtenderCaso, canActivate: [rolGuard(2)]},
+    {path: 'funcionario/casos-atendidos', component: CasosAtendidos, canActivate: [rolGuard(2)]},
+
+    {path: 'notificaciones', component: Notificaciones, canActivate: [authGuard]},
 ];
+

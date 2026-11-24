@@ -16,60 +16,54 @@ export class AuthService {
 
     login(credentials: LoginRequest): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
-            tap(response => {
-                this.guardarToken(response.token);
-            })
+            tap(response => this.guardarToken(response.token))
         );
     }
 
     guardarToken(token: string): void {
-        localStorage.setItem(this.TOKEN_KEY, token);
+        sessionStorage.setItem(this.TOKEN_KEY, token);
     }
 
     obtenerToken(): string | null {
-        return localStorage.getItem(this.TOKEN_KEY);
+        return sessionStorage.getItem(this.TOKEN_KEY);
     }
 
     cerrarSesion(): void {
-        localStorage.removeItem(this.TOKEN_KEY);
+        sessionStorage.removeItem(this.TOKEN_KEY);
+    }
+
+    /** Solo comodidad de interfaz: la validación real la hace el backend. */
+    haySesionVigente(): boolean {
+        const token = this.obtenerToken();
+        if (!token) return false;
+        try {
+            const decoded: any = jwtDecode(token);
+            return !decoded.exp || decoded.exp * 1000 > Date.now();
+        } catch {
+            return false;
+        }
+    }
+
+    private leerClaim(nombre: string): any {
+        const token = this.obtenerToken();
+        if (!token) return null;
+        try {
+            return (jwtDecode(token) as any)[nombre] ?? null;
+        } catch {
+            return null;
+        }
     }
 
     obtenerIdRol(): number | null {
-        const token = this.obtenerToken();
-        if (!token) return null;
-
-        try {
-            const decoded: any = jwtDecode(token);
-            return decoded.rol; // Extrae el "claim" de rol que inyectaste en JwtService de Java
-        } catch (Error) {
-            return null;
-        }
+        return this.leerClaim('rol');
     }
 
     obtenerIdUsuario(): number | null {
-        const token = this.obtenerToken();
-        if (!token) return null;
-
-        try {
-            const decoded: any = jwtDecode(token);
-            // Extrae el ID del usuario del payload del token. 
-            return decoded.idUsuario || decoded.id;
-        } catch (Error) {
-            return null;
-        }
+        return this.leerClaim('idUsuario');
     }
 
     obtenerNombreUsuario(): string {
-        const token = this.obtenerToken();
-        if (!token) return 'Funcionario';
-
-        try {
-            const decoded: any = jwtDecode(token);
-            // Busca el nombre completo si lo incluiste en el JWT; si no, usa el 'sub' (ej. funcionario_carlos)
-            return decoded.nombres || decoded.nombre || decoded.sub || 'Funcionario';
-        } catch (Error) {
-            return 'Funcionario';
-        }
+        return this.leerClaim('nombres') || this.leerClaim('sub') || 'Funcionario';
     }
 
     obtenerNombreRol(): string {

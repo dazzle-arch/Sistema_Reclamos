@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/areas")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
 public class AreaController {
 
     private final AreaService service;

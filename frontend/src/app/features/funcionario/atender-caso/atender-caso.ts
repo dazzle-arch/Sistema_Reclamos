@@ -10,6 +10,9 @@ import { CampanaNotificaciones } from '../../../shared/components/campana-notifi
 import { ReclamoService } from '../../../core/services/reclamo';
 import { ReclamoResponse } from '../../../core/models/reclamoResponse.model';
 import { AtencionRequest } from '../../../core/models/atencionRequest.model';
+import { AuthService } from '../../../core/services/auth.service';
+import { DocumentoService } from '../../../core/services/documento';
+import { DocumentoResponse } from '../../../core/models/documentoResponse.model';
 
 @Component({
   selector: 'app-atender-caso',
@@ -25,7 +28,9 @@ export class AtenderCaso implements OnInit {
   atencionForm!: FormGroup;
   areas: AreaResponse[] = [];
   mensajeExito = '';
+  errorMensaje = '';
   guardando = false;
+  documentos: DocumentoResponse[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -33,7 +38,9 @@ export class AtenderCaso implements OnInit {
     private reclamoService: ReclamoService,
     private areaService: AreaService,
     private fb: FormBuilder,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private documentoService: DocumentoService
   ) {
     this.inicializarFormulario();
   }
@@ -79,27 +86,33 @@ export class AtenderCaso implements OnInit {
   }
 
   cargarDatosReclamo() {
-    this.reclamoService.buscarPorId(this.idCaso).subscribe({
-      next: (data) => {
-        console.log('Datos exactos del caso recibidos:', data);
-        this.reclamo = data;
-        this.cargando = false;
-        this.cdr.detectChanges(); 
-      },
-      error: (err) => {
-        console.error('Error al cargar el caso', err);
-        this.cargando = false;
-        this.cdr.detectChanges(); 
-      }
-    });
-  }
+  this.reclamoService.buscarPorId(this.idCaso).subscribe({
+    next: (data) => {
+      this.reclamo = data;
+      this.documentoService.listarPorReclamo(this.idCaso).subscribe({
+        next: (d) => { this.documentos = d; this.cdr.detectChanges(); }
+      });
+      this.cargando = false;
+      if (this.esSoloLectura) this.atencionForm.disable();
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      this.errorMensaje = err.error?.mensaje ?? 'No se pudo cargar la información del caso.';
+      this.cargando = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   guardarAtencion() {
     if (this.atencionForm.invalid || this.guardando) {
       return;
     }
 
+    
+
     // getRawValue() lee todos los campos aunque idAreaDerivada esté deshabilitado
+    this.errorMensaje = '';
     this.guardando = true;
     const raw = this.atencionForm.getRawValue();
     const payload: AtencionRequest = {
@@ -118,7 +131,7 @@ export class AtenderCaso implements OnInit {
         }, 2000);
       },
       error: (err) => {
-        console.error('Error al guardar atención:', err);
+        this.errorMensaje = err.error?.mensaje ?? 'No se pudo guardar la atención.';
         this.guardando = false;
         this.cdr.detectChanges();
       }
@@ -135,10 +148,22 @@ export class AtenderCaso implements OnInit {
     });
   }
 
-  // Decide si la vista es solo lectura según el estado del reclamo
+  descargarDocumento(d: DocumentoResponse): void {
+    this.documentoService.descargar(d, () => {
+      this.errorMensaje = 'No se pudo descargar el archivo.';
+      this.cdr.detectChanges();
+    });
+  }
+
+  /** Solo lectura: caso cerrado o asignado a otro funcionario. RESUELTO sigue editable para poder cerrarlo. */
   get esSoloLectura(): boolean {
     if (!this.reclamo) return true;
-    // Si quieres que RESUELTO todavía pueda pasarse a CERRADO, deja solo: === 'CERRADO'
-    return this.reclamo.estado === 'CERRADO' || this.reclamo.estado === 'RESUELTO';
+    if (this.reclamo.estado === 'CERRADO') return true;
+    return this.esDeOtro;
+  }
+
+  get esDeOtro(): boolean {
+    const asignado = this.reclamo?.idUsuarioAsignado;
+    return asignado != null && asignado !== this.authService.obtenerIdUsuario();
   }
 }

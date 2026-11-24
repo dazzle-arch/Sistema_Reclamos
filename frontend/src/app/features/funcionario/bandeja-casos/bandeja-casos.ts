@@ -43,12 +43,12 @@ export class BandejaCasos implements OnInit {
         };
 
         this.reclamosAsignados = data
-          .filter((r) => r.estado !== 'RESUELTO' && r.estado !== 'CERRADO')
+          .filter((r) => r.estado !== 'CERRADO')
           .sort((a, b) => {
             const valorA = valoresPrioridad[a.prioridad?.toUpperCase()] || 99;
             const valorB = valoresPrioridad[b.prioridad?.toUpperCase()] || 99;
             return valorA - valorB;
-          });
+        });
 
         this.cargando = false;
         this.cdr.detectChanges();
@@ -59,5 +59,18 @@ export class BandejaCasos implements OnInit {
         this.cdr.detectChanges(); // Asegura quitar el spinner si falla la petición
       }
     });
+  }
+
+  puedeAtender(r: ReclamoResponse): boolean {
+  return r.idUsuarioAsignado == null || r.idUsuarioAsignado === this.authService.obtenerIdUsuario();
+}
+
+  claseEstado(estado: string): string {
+    switch (estado) {
+      case 'EN_PROCESO': return 'bg-warning text-dark';
+      case 'RESUELTO': return 'bg-info text-dark';
+      case 'CERRADO': return 'bg-success';
+      default: return 'bg-secondary';
+    }
   }
 }
